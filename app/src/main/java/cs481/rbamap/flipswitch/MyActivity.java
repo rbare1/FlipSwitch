@@ -2,16 +2,39 @@ package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MyActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
+        ledTestButton.setText("Switch LED On"); //text starts out at Off so this changes it to the proper text
+        ledTestButton.setOnClickListener(new Button.OnClickListener() {
+                                             boolean ledStatus = false;
+                                             Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
+                                             public void onClick(View v) {
+                                                 if(ledStatus == false) {
+                                                     Log.v("", "LED is switched on now");
+                                                     ledTestButton.setText("Switch LED Off");
+                                                     ledStatus = true;
+                                                 }
+                                                 else{
+                                                     Log.v("", "LED is switched off now");
+                                                     ledTestButton.setText("Switch LED On");
+                                                     ledStatus = false;
+                                                 }
+                                             }
+                                         }
+        );
     }
 
 
