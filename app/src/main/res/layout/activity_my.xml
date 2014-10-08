@@ -18,4 +18,12 @@ android:id="@+id/MyActivity">
         android:layout_centerHorizontal="true"
         android:layout_marginTop="77dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Living Room"
+        android:id="@+id/lr_button"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

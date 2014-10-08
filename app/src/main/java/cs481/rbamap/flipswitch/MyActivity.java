@@ -1,13 +1,13 @@
 package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
 
 public class MyActivity extends Activity {
 
@@ -16,6 +16,12 @@ public class MyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+
+        setupLEDButton();
+        setupLRButton();
+    }
+
+    private void setupLEDButton(){
         Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
         ledTestButton.setText("Switch LED On"); //text starts out at Off so this changes it to the proper text
         ledTestButton.setOnClickListener(new Button.OnClickListener() {
@@ -35,6 +41,15 @@ public class MyActivity extends Activity {
                                              }
                                          }
         );
+    }
+
+    private void setupLRButton(){
+        Button lr_Button = (Button) findViewById(R.id.lr_button);
+        lr_Button.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v){
+                startActivity(new Intent(MyActivity.this, LivingRoom.class));
+            }
+        });
     }
 
 
