@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import android.util.Log;
+import java.io.PrintWriter;
 
 //Some code used from http://helloraspberrypi.blogspot.com/2013/12/java-exercise-client-and-server-example_20.html
 //as a start
@@ -17,19 +18,28 @@ import house.models.Light;
  * Created by Mandy on 9/22/2014.
  */
 
-public class LightController extends AsyncTask<Void, Void, Void>{
+public class LightController extends AsyncTask<Integer, Void, Void>{
     String dstAddress;
     int dstPort;
     String response;
 
-    protected Void doInBackground(Void... arg0) {
 
+    protected Void doInBackground(Integer... lightStatus) {
+        //Light led = new Light("LED", 0, null);
+        int status = lightStatus[0];
         try {
             Log.v("", "Opening Socket");
             Socket socket = new Socket("192.168.163.37", 8080);
             Log.v("", "Opened Socket");
             InputStream inputStream = socket.getInputStream();
-
+            try {
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                out.write(status);
+                out.flush();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             Log.v("", "Closing Socket");
             socket.close();
 
