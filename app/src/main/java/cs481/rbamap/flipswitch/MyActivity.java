@@ -9,12 +9,53 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import org.apache.http.client.ClientProtocolException;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import house.mobilecontrollers.LightController;
+import house.mobilecontrollers.SensorController;
+import house.models.Light;
+import house.models.Sensor;
+
+
 public class MyActivity extends Activity {
 
-
+    Light led = new Light("LED", 0, null);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setDefaultView();
+    }
+
+    Sensor trigger = new Sensor("trigger", 0, null, 0, null);
+
+    public void setLightStatus() {
+        LightController controller = new LightController();
+        Log.v("", "in status");
+        controller.execute(led.getStatus());
+        if(led.getStatus() == 1){
+            led.setStatus(0);
+        } else if(led.getStatus() == 0){
+            led.setStatus(1);
+        }
+    }
+
+    public void setTriggerStatus() {
+        SensorController controller = new SensorController();
+        Log.v("", "in status");
+        controller.execute(trigger.getStatus());
+        if(trigger.getStatus() == 1){
+            trigger.setStatus(0);
+        } else if(trigger.getStatus() == 0){
+            trigger.setStatus(1);
+        }
+    }
+
+    public void setDefaultView(){
         setContentView(R.layout.activity_my);
 
         setupLEDButton();
@@ -32,11 +73,13 @@ public class MyActivity extends Activity {
                                                      Log.v("", "LED is switched on now");
                                                      ledTestButton.setText("Switch LED Off");
                                                      ledStatus = true;
+                                                     setLightStatus();
                                                  }
                                                  else{
                                                      Log.v("", "LED is switched off now");
                                                      ledTestButton.setText("Switch LED On");
                                                      ledStatus = false;
+                                                     setLightStatus();
                                                  }
                                              }
                                          }
