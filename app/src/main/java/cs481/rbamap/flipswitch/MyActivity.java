@@ -11,9 +11,7 @@ import android.widget.Button;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
-
 import java.io.IOException;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import house.mobilecontrollers.LightController;
