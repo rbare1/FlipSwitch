@@ -45,7 +45,7 @@ public class MyActivity extends Activity {
     public void setTriggerStatus() {
         SensorController controller = new SensorController();
         Log.v("", "in status");
-        controller.execute(trigger.getStatus());
+        //controller.execute(trigger.getStatus());
         if(trigger.getStatus() == 1){
             trigger.setStatus(0);
         } else if(trigger.getStatus() == 0){
@@ -57,7 +57,6 @@ public class MyActivity extends Activity {
         setContentView(R.layout.activity_my);
 
         setupLEDButton();
-        setupLRButton();
     }
 
     private void setupLEDButton(){
@@ -83,16 +82,6 @@ public class MyActivity extends Activity {
                                          }
         );
     }
-
-    private void setupLRButton(){
-        Button lr_Button = (Button) findViewById(R.id.lr_button);
-        lr_Button.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v){
-                startActivity(new Intent(MyActivity.this, LivingRoom.class));
-            }
-        });
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

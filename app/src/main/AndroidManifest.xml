@@ -18,18 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Bathroom"
-            android:label="@string/title_activity_bathroom" >
-        </activity>
-        <activity
-            android:name=".Kitchen"
-            android:label="@string/title_activity_kitchen" >
-        </activity>
-        <activity
-            android:name=".LivingRoom"
-            android:label="@string/title_activity_living_room" >
-        </activity>
     </application>
 
 </manifest>
