@@ -1,7 +1,6 @@
 package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,11 +10,13 @@ import android.widget.Button;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
+
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import house.mobilecontrollers.LightController;
-import house.mobilecontrollers.SensorController;
+//import house.mobilecontrollers.SensorController;
 import house.models.Light;
 import house.models.Sensor;
 
@@ -29,7 +30,7 @@ public class MyActivity extends Activity {
         setDefaultView();
     }
 
-    Sensor trigger = new Sensor("trigger", 0, null, 0, null);
+    //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
 
     public void setLightStatus() {
         LightController controller = new LightController();
@@ -42,29 +43,24 @@ public class MyActivity extends Activity {
         }
     }
 
-    public void setTriggerStatus() {
+   /* public void setTriggerStatus() {
         SensorController controller = new SensorController();
         Log.v("", "in status");
-        //controller.execute(trigger.getStatus());
+        controller.execute(trigger.getStatus());
         if(trigger.getStatus() == 1){
             trigger.setStatus(0);
         } else if(trigger.getStatus() == 0){
             trigger.setStatus(1);
         }
     }
-
+*/
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
-
-        setupLEDButton();
-    }
-
-    private void setupLEDButton(){
-        Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
+       /* Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
         ledTestButton.setText("Switch LED On"); //text starts out at Off so this changes it to the proper text
         ledTestButton.setOnClickListener(new Button.OnClickListener() {
                                              boolean ledStatus = false;
-                                             Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
+                                             //Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
                                              public void onClick(View v) {
                                                  if(ledStatus == false) {
                                                      Log.v("", "LED is switched on now");
@@ -80,7 +76,7 @@ public class MyActivity extends Activity {
                                                  }
                                              }
                                          }
-        );
+        );*/
     }
 
     @Override
