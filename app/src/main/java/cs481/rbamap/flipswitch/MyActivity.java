@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
@@ -23,11 +24,20 @@ import house.models.Sensor;
 
 public class MyActivity extends Activity {
 
+    TextView tempText;
+    int temp = 70; //should probably be saved in a file and then pulled for persistence between runs
+    TextView doorsLocked;
+    int doors = 2;
+
     Light led = new Light("LED", 0, null);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setDefaultView();
+        tempText = (TextView) findViewById(R.id.tempText);
+        tempText.setText(String.valueOf(temp)+"°");
+        doorsLocked = (TextView) findViewById(R.id.doorsLocked);
+        doorsLocked.setText("    "+String.valueOf(doors)+"\nDoors\nLocked");
     }
 
     //Sensor trigger = new Sensor("trigger", 0, null, 0, null);

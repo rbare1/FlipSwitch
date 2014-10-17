@@ -6,25 +6,155 @@ android:layout_height="match_parent"
 android:id="@+id/MyActivity"
     android:background="#ff4c4c4c">
 
-    <ImageButton
 
-        android:layout_width="130dp"
-        android:layout_height="130dp"
 
-        android:id="@+id/imageButton2"
-        android:src="@drawable/temp_icon"
-        android:layout_marginLeft="49dp"
-        android:layout_centerVertical="true"
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView3"
+        android:layout_marginBottom="3dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <ImageButton
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_marginRight="49dp"
-        android:id="@+id/imageButton"
-        android:src="@drawable/lock_icon"
-        android:layout_alignTop="@+id/imageButton2"
+        android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/linearLayout">
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginRight="27dp"
+            android:text="Temp"
+            android:textSize="30sp"
+            android:textColor="#FFFFFF"
+            android:id="@+id/tempText"
+            android:layout_centerVertical="true"
+            android:layout_alignRight="@+id/imageButton2"
+            android:layout_alignEnd="@+id/imageButton2" />
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/imageButton3"
+                android:src="@drawable/light_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/textView2" />
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_marginLeft="250dp"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:text="Doors Locked"
+            android:id="@+id/doorsLocked"
+            android:layout_alignTop="@+id/tempText" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView8"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="230dp"
+        android:layout_below="@+id/horizontalScrollView3"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/lockButton"
+                android:src="@drawable/lock_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageButton
+
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/tempButton"
+                android:src="@drawable/temp_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_toLeftOf="@+id/lockButton"
+                android:layout_toStartOf="@+id/lockButton" />
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/lightButton"
+                android:src="@drawable/light_icon"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/tempButton"
+                android:layout_toStartOf="@+id/tempButton" />
+
+            </LinearLayout>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView12"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="145dp"
+        android:layout_marginBottom="85dp"
+        android:layout_below="@+id/horizontalScrollView3"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/open_garage"
+                android:src="@drawable/open_garage_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageButton
+
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/tempButton2"
+                android:src="@drawable/temp_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_toLeftOf="@+id/lockButton"
+                android:layout_toStartOf="@+id/lockButton" />
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/lightButton2"
+                android:src="@drawable/light_icon"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/tempButton"
+                android:layout_toStartOf="@+id/tempButton" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
 </RelativeLayout>
