@@ -27,7 +27,7 @@ public class LightController extends AsyncTask<Light, Void, Void>{
 
     protected Void doInBackground(Light... light) {
         Room room = light[0].getLocation();
-        String roomName = room.getClass().getName();
+        String roomName = room.getName();
         try {
             Log.v("", "Opening Socket");
             Socket socket = new Socket("192.168.163.37", 8080);

@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.apache.http.client.ClientProtocolException;
@@ -35,10 +36,6 @@ public class MyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setDefaultView();
-        tempText = (TextView) findViewById(R.id.tempText);
-        tempText.setText(String.valueOf(temp)+"°");
-        doorsLocked = (TextView) findViewById(R.id.doorsLocked);
-        doorsLocked.setText("    " + String.valueOf(doors) + "\nDoors\nLocked");
     }
 
     //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
@@ -47,7 +44,6 @@ public class MyActivity extends Activity {
         LightController controller = new LightController();
         Light light = new Light();
         light.setLocation(room);
-        Log.v("", "in status");
         controller.execute(light);
         if(led.getStatus() == 1){
             led.setStatus(0);
@@ -58,27 +54,46 @@ public class MyActivity extends Activity {
 
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
-       /* Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
-        ledTestButton.setText("Switch LED On"); //text starts out at Off so this changes it to the proper text
-        ledTestButton.setOnClickListener(new Button.OnClickListener() {
-                                             boolean ledStatus = false;
-                                             //Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
-                                             public void onClick(View v) {
-                                                 if(ledStatus == false) {
-                                                     Log.v("", "LED is switched on now");
-                                                     ledTestButton.setText("Switch LED Off");
-                                                     ledStatus = true;
-                                                     setLightStatus();
-                                                 }
-                                                 else{
-                                                     Log.v("", "LED is switched off now");
-                                                     ledTestButton.setText("Switch LED On");
-                                                     ledStatus = false;
-                                                     setLightStatus();
-                                                 }
-                                             }
-                                         }
-        );*/
+
+       ImageButton bathroomLight = (ImageButton) findViewById(R.id.button_BathroomLight);
+       bathroomLight.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                Room bathroom = new Room();
+                bathroom.setName("bathroom");
+                triggerLight(bathroom);
+             }
+         }
+        );
+
+        ImageButton bedroomLight = (ImageButton) findViewById(R.id.button_BedroomLight);
+        bedroomLight.setOnClickListener(new Button.OnClickListener() {
+             public void onClick(View v) {
+                 Room bedroom = new Room();
+                 bedroom.setName("bedroom");
+                 triggerLight(bedroom);
+             }
+         }
+        );
+
+        ImageButton kitchenLight = (ImageButton) findViewById(R.id.button_KitchenLight);
+        kitchenLight.setOnClickListener(new Button.OnClickListener() {
+                 public void onClick(View v) {
+                     Room kitchen = new Room();
+                     kitchen.setName("kitchen");
+                     triggerLight(kitchen);
+                 }
+             }
+        );
+
+        ImageButton livingRoomLight = (ImageButton) findViewById(R.id.button_LivingRoomLight);
+        livingRoomLight.setOnClickListener(new Button.OnClickListener() {
+                 public void onClick(View v) {
+                     Room livingRoom = new Room();
+                     livingRoom.setName("living room");
+                     triggerLight(livingRoom);
+                 }
+             }
+        );
     }
 
     @Override
