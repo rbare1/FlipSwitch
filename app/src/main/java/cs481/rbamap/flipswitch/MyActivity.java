@@ -1,35 +1,46 @@
 package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
+
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import house.mobilecontrollers.LightController;
-import house.mobilecontrollers.SensorController;
+//import house.mobilecontrollers.SensorController;
 import house.models.Light;
 import house.models.Sensor;
 
 
 public class MyActivity extends Activity {
 
+    TextView tempText;
+    int temp = 70; //should probably be saved in a file and then pulled for persistence between runs
+    TextView doorsLocked;
+    int doors = 2;
+
     Light led = new Light("LED", 0, null);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setDefaultView();
+        tempText = (TextView) findViewById(R.id.tempText);
+        tempText.setText(String.valueOf(temp)+"°");
+        doorsLocked = (TextView) findViewById(R.id.doorsLocked);
+        doorsLocked.setText("    "+String.valueOf(doors)+"\nDoors\nLocked");
     }
 
-    Sensor trigger = new Sensor("trigger", 0, null, 0, null);
+    //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
 
     public void setLightStatus() {
         LightController controller = new LightController();
@@ -42,7 +53,7 @@ public class MyActivity extends Activity {
         }
     }
 
-    public void setTriggerStatus() {
+   /* public void setTriggerStatus() {
         SensorController controller = new SensorController();
         Log.v("", "in status");
         controller.execute(trigger.getStatus());
@@ -52,20 +63,14 @@ public class MyActivity extends Activity {
             trigger.setStatus(1);
         }
     }
-
+*/
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
-
-        setupLEDButton();
-        setupLRButton();
-    }
-
-    private void setupLEDButton(){
-        Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
+       /* Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
         ledTestButton.setText("Switch LED On"); //text starts out at Off so this changes it to the proper text
         ledTestButton.setOnClickListener(new Button.OnClickListener() {
                                              boolean ledStatus = false;
-                                             Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
+                                             //Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
                                              public void onClick(View v) {
                                                  if(ledStatus == false) {
                                                      Log.v("", "LED is switched on now");
@@ -81,18 +86,8 @@ public class MyActivity extends Activity {
                                                  }
                                              }
                                          }
-        );
+        );*/
     }
-
-    private void setupLRButton(){
-        Button lr_Button = (Button) findViewById(R.id.lr_button);
-        lr_Button.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v){
-                startActivity(new Intent(MyActivity.this, LivingRoom.class));
-            }
-        });
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
