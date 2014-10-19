@@ -100,16 +100,6 @@ android:id="@+id/MyActivity"
                 android:layout_alignParentEnd="true" />
 
             <ImageButton
-
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:id="@+id/tempButton"
-                android:src="@drawable/living_room_light_icon"
-                android:layout_below="@+id/horizontalScrollView3"
-                android:layout_toLeftOf="@+id/lockButton"
-                android:layout_toStartOf="@+id/lockButton" />
-
-            <ImageButton
                 android:layout_width="140dp"
                 android:layout_height="138dp"
                 android:id="@+id/lightButton"
@@ -118,6 +108,16 @@ android:id="@+id/MyActivity"
                 android:layout_alignBottom="@+id/horizontalScrollView8"
                 android:layout_toLeftOf="@+id/tempButton"
                 android:layout_toStartOf="@+id/tempButton" />
+
+            <ImageButton
+
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/tempButton"
+                android:src="@drawable/living_room_light_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_toLeftOf="@+id/lockButton"
+                android:layout_toStartOf="@+id/lockButton" />
 
             <ImageButton
                 android:layout_width="140dp"
