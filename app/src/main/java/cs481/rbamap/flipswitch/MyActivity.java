@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import house.mobilecontrollers.LightController;
 //import house.mobilecontrollers.SensorController;
 import house.models.Light;
+import house.models.Room;
 import house.models.Sensor;
 
 
@@ -37,15 +38,17 @@ public class MyActivity extends Activity {
         tempText = (TextView) findViewById(R.id.tempText);
         tempText.setText(String.valueOf(temp)+"°");
         doorsLocked = (TextView) findViewById(R.id.doorsLocked);
-        doorsLocked.setText("    "+String.valueOf(doors)+"\nDoors\nLocked");
+        doorsLocked.setText("    " + String.valueOf(doors) + "\nDoors\nLocked");
     }
 
     //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
 
-    public void setLightStatus() {
+    public void triggerLight(Room room) {
         LightController controller = new LightController();
+        Light light = new Light();
+        light.setLocation(room);
         Log.v("", "in status");
-        controller.execute(led.getStatus());
+        controller.execute(light);
         if(led.getStatus() == 1){
             led.setStatus(0);
         } else if(led.getStatus() == 0){
@@ -53,17 +56,6 @@ public class MyActivity extends Activity {
         }
     }
 
-   /* public void setTriggerStatus() {
-        SensorController controller = new SensorController();
-        Log.v("", "in status");
-        controller.execute(trigger.getStatus());
-        if(trigger.getStatus() == 1){
-            trigger.setStatus(0);
-        } else if(trigger.getStatus() == 0){
-            trigger.setStatus(1);
-        }
-    }
-*/
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
        /* Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
