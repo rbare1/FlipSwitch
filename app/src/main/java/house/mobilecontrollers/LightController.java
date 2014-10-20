@@ -13,20 +13,21 @@ import java.io.PrintWriter;
 //as a start
 
 import house.models.Light;
+import house.models.Room;
 
 /**
  * Created by Mandy on 9/22/2014.
  */
 
-public class LightController extends AsyncTask<Integer, Void, Void>{
+public class LightController extends AsyncTask<Light, Void, Void>{
     String dstAddress;
     int dstPort;
     String response;
 
 
-    protected Void doInBackground(Integer... lightStatus) {
-        //Light led = new Light("LED", 0, null);
-        int status = lightStatus[0];
+    protected Void doInBackground(Light... light) {
+        Room room = light[0].getLocation();
+        String roomName = room.getName();
         try {
             Log.v("", "Opening Socket");
             Socket socket = new Socket("192.168.163.37", 8080);
@@ -34,7 +35,7 @@ public class LightController extends AsyncTask<Integer, Void, Void>{
             InputStream inputStream = socket.getInputStream();
             try {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                out.write(status);
+                out.write(roomName);
                 out.flush();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
