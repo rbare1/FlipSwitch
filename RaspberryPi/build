@@ -1,0 +1,10 @@
+#!/bin/sh
+javac -classpath .:classes:/opt/pi4j/lib/'*' -d . Room.java Light.java host.java
+
+echo "---------------------------------------------------------"
+
+# THE FOLLOWING INSTRUCTIONS WILL EXECUTE ONE OF THE EXAMPLES
+# sudo java -classpath .:classes:/opt/pi4j/lib/'*' BlinkGpioExample
+#echo "The following command syntax can be used to execute the sample projects:"
+#echo "  sudo java -classpath .:classes:/opt/pi4j/lib/'*' BlinkGpioExample"
+#echo "---------------------------------------------------------"
