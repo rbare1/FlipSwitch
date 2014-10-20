@@ -1,26 +1,35 @@
 package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
+
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import house.mobilecontrollers.LightController;
-import house.mobilecontrollers.SensorController;
+//import house.mobilecontrollers.SensorController;
 import house.models.Light;
+import house.models.Room;
 import house.models.Sensor;
 
 
 public class MyActivity extends Activity {
+
+    TextView tempText;
+    int temp = 70; //should probably be saved in a file and then pulled for persistence between runs
+    TextView doorsLocked;
+    int doors = 2;
 
     Light led = new Light("LED", 0, null);
     @Override
@@ -29,12 +38,13 @@ public class MyActivity extends Activity {
         setDefaultView();
     }
 
-    Sensor trigger = new Sensor("trigger", 0, null, 0, null);
+    //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
 
-    public void setLightStatus() {
+    public void triggerLight(Room room) {
         LightController controller = new LightController();
-        Log.v("", "in status");
-        controller.execute(led.getStatus());
+        Light light = new Light();
+        light.setLocation(room);
+        controller.execute(light);
         if(led.getStatus() == 1){
             led.setStatus(0);
         } else if(led.getStatus() == 0){
@@ -42,57 +52,49 @@ public class MyActivity extends Activity {
         }
     }
 
-    public void setTriggerStatus() {
-        SensorController controller = new SensorController();
-        Log.v("", "in status");
-        controller.execute(trigger.getStatus());
-        if(trigger.getStatus() == 1){
-            trigger.setStatus(0);
-        } else if(trigger.getStatus() == 0){
-            trigger.setStatus(1);
-        }
-    }
-
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
 
-        setupLEDButton();
-        setupLRButton();
-    }
+       ImageButton bathroomLight = (ImageButton) findViewById(R.id.button_BathroomLight);
+       bathroomLight.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                Room bathroom = new Room();
+                bathroom.setName("bathroom");
+                triggerLight(bathroom);
+             }
+         }
+        );
 
-    private void setupLEDButton(){
-        Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
-        ledTestButton.setText("Switch LED On"); //text starts out at Off so this changes it to the proper text
-        ledTestButton.setOnClickListener(new Button.OnClickListener() {
-                                             boolean ledStatus = false;
-                                             Button ledTestButton = (Button) findViewById(R.id.ledTestButton);
-                                             public void onClick(View v) {
-                                                 if(ledStatus == false) {
-                                                     Log.v("", "LED is switched on now");
-                                                     ledTestButton.setText("Switch LED Off");
-                                                     ledStatus = true;
-                                                     setLightStatus();
-                                                 }
-                                                 else{
-                                                     Log.v("", "LED is switched off now");
-                                                     ledTestButton.setText("Switch LED On");
-                                                     ledStatus = false;
-                                                     setLightStatus();
-                                                 }
-                                             }
-                                         }
+        ImageButton bedroomLight = (ImageButton) findViewById(R.id.button_BedroomLight);
+        bedroomLight.setOnClickListener(new Button.OnClickListener() {
+             public void onClick(View v) {
+                 Room bedroom = new Room();
+                 bedroom.setName("bedroom");
+                 triggerLight(bedroom);
+             }
+         }
+        );
+
+        ImageButton kitchenLight = (ImageButton) findViewById(R.id.button_KitchenLight);
+        kitchenLight.setOnClickListener(new Button.OnClickListener() {
+                 public void onClick(View v) {
+                     Room kitchen = new Room();
+                     kitchen.setName("kitchen");
+                     triggerLight(kitchen);
+                 }
+             }
+        );
+
+        ImageButton livingRoomLight = (ImageButton) findViewById(R.id.button_LivingRoomLight);
+        livingRoomLight.setOnClickListener(new Button.OnClickListener() {
+                 public void onClick(View v) {
+                     Room livingRoom = new Room();
+                     livingRoom.setName("living room");
+                     triggerLight(livingRoom);
+                 }
+             }
         );
     }
-
-    private void setupLRButton(){
-        Button lr_Button = (Button) findViewById(R.id.lr_button);
-        lr_Button.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v){
-                startActivity(new Intent(MyActivity.this, LivingRoom.class));
-            }
-        });
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

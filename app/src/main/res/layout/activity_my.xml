@@ -1,29 +1,184 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:paddingLeft="@dimen/activity_horizontal_margin"
-android:paddingRight="@dimen/activity_horizontal_margin"
-android:paddingTop="@dimen/activity_vertical_margin"
-android:paddingBottom="@dimen/activity_vertical_margin"
-tools:context=".MyActivity"
-android:id="@+id/MyActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyActivity"
+    android:id="@+id/MyActivity"
+    android:background="#ff4c4c4c">
 
-    <ToggleButton
+
+
+    <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Turn LED On"
-        android:id="@+id/ledTestButton"
+        android:id="@+id/horizontalScrollView3"
+        android:layout_marginBottom="3dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="77dp" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" >
 
-    <Button
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/linearLayout">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton3"
+                android:src="@drawable/preset1_icon" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton9"
+                android:src="@drawable/preset2_icon" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton7"
+                android:src="@drawable/preset3_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Living Room"
-        android:id="@+id/lr_button"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/horizontalScrollView8"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="230dp"
+        android:layout_below="@+id/horizontalScrollView3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/button_BathroomLight"
+                android:src="@drawable/bathroom_light_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageButton
+
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/button_LivingRoomLight"
+                android:src="@drawable/living_room_light_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_toLeftOf="@+id/button_BathroomLight"
+                android:layout_toStartOf="@+id/button_BathroomLight" />
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/button_KitchenLight"
+                android:src="@drawable/kitchen_light_icon"
+                android:layout_toRightOf="@+id/imageButton2"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/button_LivingRoomLight"
+                android:layout_toStartOf="@+id/button_LivingRoomLight" />
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/button_BedroomLight"
+                android:src="@drawable/bedroom_light_icon"
+                android:layout_toRightOf="@+id/imageButton2"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/button_LivingRoomLight"
+                android:layout_toStartOf="@+id/button_LivingRoomLight" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView12"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="145dp"
+        android:layout_marginBottom="85dp"
+        android:layout_below="@+id/horizontalScrollView3"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/open_garage"
+                android:src="@drawable/open_garage_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <ImageButton
+
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:id="@+id/tempButton2"
+                android:src="@drawable/closed_garage_icon"
+                android:layout_below="@+id/horizontalScrollView3"
+                android:layout_toLeftOf="@+id/button_BathroomLight"
+                android:layout_toStartOf="@+id/button_BathroomLight" />
+
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/lightButton2"
+                android:src="@drawable/lock_icon"
+                android:layout_toRightOf="@+id/imageButton2"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/button_LivingRoomLight"
+                android:layout_toStartOf="@+id/button_LivingRoomLight" />
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/lightButton3"
+                android:src="@drawable/temp_icon"
+                android:layout_toRightOf="@+id/imageButton2"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/button_LivingRoomLight"
+                android:layout_toStartOf="@+id/button_LivingRoomLight" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ImageButton
+        android:layout_width="110dp"
+        android:layout_height="80dp"
+        android:id="@+id/imageButton10"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/music_icon" />
 
 </RelativeLayout>

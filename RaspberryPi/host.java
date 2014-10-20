@@ -9,27 +9,47 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-package light.java;
+//import app.src.main.java.house.models.Light;
+
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
+import com.pi4j.io.gpio.RaspiPin;
 
 public class host {
 	
 	static final String GPIO_OUT = "out";
     static final String GPIO_ON = "1";
     static final String GPIO_OFF = "0";
-    static final String GPIO_CH00="17";
+    static final String GPIO_LIVINGROOM = "17";
     static final String GPIO_SWI="19";
 	
 	
 
     public static void main(String srgs[]) {
 
-        int count = 0;
-        int ledStatus = 0;
-
+		String location = ""; 
+		int count = 0;
+        
         //hard code to use port 8080
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             
             System.out.println("Waiting");
+            
+            final GpioController gpio = GpioFactory.getInstance();
+				
+			final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);
+				livingRoomPin.low();
+				
+			final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
+				kitchenPin.low();
+				
+			final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
+				bedroomPin.low();
+				
+			final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH);
+				bathroomPin.low();
             
             while (true) {
                 
@@ -38,39 +58,13 @@ public class host {
              
             /***  Init GPIO port for output ***/
             
-            // Open file handles to GPIO port unexport and export controls
-            FileWriter unexportFile = new FileWriter("/sys/class/gpio/unexport");
-            FileWriter exportFile = new FileWriter("/sys/class/gpio/export");
-            
-
-            // Reset the port
-            File exportFileCheck = new File("/sys/class/gpio/gpio"+GPIO_CH00);
-            if (exportFileCheck.exists()) {
-                unexportFile.write(GPIO_CH00);
-                unexportFile.flush();
-            }
-            
-            
-            // Set the port for use
-            exportFile.write(GPIO_CH00);  
-            exportFile.flush();
-
-            // Open file handle to port input/output control
-            FileWriter directionFile =
-                    new FileWriter("/sys/class/gp
-            exportFile.write(GPIO_CH00);  
-            exportFile.flush();
-
-            // Open file handle to port input/output control
-            FileWriter directionFile =
-                    new FileWriter("/sys/class/gpio/gpio"+GPIO_CH00+"/direction");
+								
        
                     
                try{
-				   System.out.println("LED Status before buffered reader: " + ledStatus);
 				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				   ledStatus = in.read();
-				   System.out.println("LED Status: " + ledStatus);
+				   location = in.readLine();
+				   System.out.println("Room Name " + location + ".");
 				  
 				   
 			   }   catch(IOException e){	
@@ -78,33 +72,31 @@ public class host {
 				   System.out.println("Exception with bufferedReader");
 			   }  
             
-            // Set port for output
-            directionFile.write(GPIO_OUT);
-            directionFile.flush();
             
-            /*** Send commands to GPIO port ***/
-            
-            // Open file handle to issue commands to GPIO port
-            FileWriter commandFile = new FileWriter("/sys/class/gpio/gpio"+GPIO_CH00+
-                    "/value");
                    
 			String cam = "cam";
-             if(ledStatus == 0){   
+               
 				 // Set GPIO port ON
+				if(location.equals("kitchen")){
+					System.out.println("Turning On Kitchen");
+					kitchenPin.toggle();
+				}else if(location.equals("bathroom")){
+					System.out.println("Turning On Bathroom");
+					bathroomPin.toggle();
+				}else if(location.equals("bedroom")){
+					System.out.println("Turning On Bedroom");
+					bedroomPin.toggle();
+				}else if(location.equals("living room")){
+					System.out.println("Turning On Living Room");
+					livingRoomPin.toggle();
+				}
 				 
 				 
-				 commandFile.write(GPIO_ON);
-				 commandFile.flush();
-				 
-				execShellCommand("raspistill -o "+cam+".jpg");
-				execShellCommand("sudo mv -f "+cam+".jpg /home/pi/Desktop");
-			 }
-
-			if(ledStatus == 1){
-				 // Set GPIO port OFF
-				commandFile.write(GPIO_OFF);
-				commandFile.flush();
-			 }  
+				 				 
+				//execShellCommand("raspistill -o "+cam+".jpg");
+				//execShellCommand("sudo mv -f "+cam+".jpg /home/pi/Desktop");
+			
+ 
                         
                     count++;
                     System.out.println("Connection!");
