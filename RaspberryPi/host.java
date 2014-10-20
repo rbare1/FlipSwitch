@@ -24,6 +24,19 @@ public class host {
     static final String GPIO_OFF = "0";
     static final String GPIO_LIVINGROOM = "17";
     static final String GPIO_SWI="19";
+    static final GpioController gpio = GpioFactory.getInstance();
+				
+	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);
+				
+				
+	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
+				
+				
+	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
+				
+				
+	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH);
+				
 	
 	
 
@@ -31,26 +44,17 @@ public class host {
 
 		String location = ""; 
 		int count = 0;
+		livingRoomPin.low();
+        kitchenPin.low();
+        bedroomPin.low();
+        bathroomPin.low();
         
         //hard code to use port 8080
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             
             System.out.println("Waiting");
             
-            final GpioController gpio = GpioFactory.getInstance();
-				
-			final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);
-				livingRoomPin.low();
-				
-			final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
-				kitchenPin.low();
-				
-			final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
-				bedroomPin.low();
-				
-			final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH);
-				bathroomPin.low();
-            
+                       
             while (true) {
                 
                 try {
@@ -72,37 +76,20 @@ public class host {
 				   System.out.println("Exception with bufferedReader");
 			   }  
             
-            
-                   
-			String cam = "cam";
-               
-				 // Set GPIO port ON
-				if(location.equals("kitchen")){
-					System.out.println("Turning On Kitchen");
-					kitchenPin.toggle();
-				}else if(location.equals("bathroom")){
-					System.out.println("Turning On Bathroom");
-					bathroomPin.toggle();
-				}else if(location.equals("bedroom")){
-					System.out.println("Turning On Bedroom");
-					bedroomPin.toggle();
-				}else if(location.equals("living room")){
-					System.out.println("Turning On Living Room");
-					livingRoomPin.toggle();
-				}
-				 
-				 
-				 				 
+				TriggerLight(location);
+					   
+				String cam = "cam";
+             	 
+				 				 				 
 				//execShellCommand("raspistill -o "+cam+".jpg");
 				//execShellCommand("sudo mv -f "+cam+".jpg /home/pi/Desktop");
 			
- 
-                        
-                    count++;
-                    System.out.println("Connection!");
+                       
+				count++;
+				System.out.println("Connection!");
 
-                    HostThread thisHostThread = new HostThread(socket, count);
-                    thisHostThread.start();
+				HostThread thisHostThread = new HostThread(socket, count);
+				thisHostThread.start();
                     
                 } catch (IOException ex) {
                     System.out.println(ex.toString());
@@ -129,6 +116,23 @@ public class host {
 			pr.waitFor();
 		} catch (IOException | InterruptedException ex){
 			
+		}
+	}
+	
+	 private static void TriggerLight(String location){  
+	
+		if(location.equals("kitchen")){
+			System.out.println("Turning On Kitchen");
+			kitchenPin.toggle();
+		}else if(location.equals("bathroom")){
+			System.out.println("Turning On Bathroom");
+			bathroomPin.toggle();
+		}else if(location.equals("bedroom")){
+			System.out.println("Turning On Bedroom");
+			bedroomPin.toggle();
+		}else if(location.equals("living room")){
+			System.out.println("Turning On Living Room");
+			livingRoomPin.toggle();
 		}
 	}
 }
