@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
 //import app.src.main.java.house.models.Light;
 
 import com.pi4j.io.gpio.GpioController;
@@ -16,6 +18,10 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.PinPullResistance;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 public class host {
 	
@@ -26,28 +32,38 @@ public class host {
     static final String GPIO_SWI="19";
     static final GpioController gpio = GpioFactory.getInstance();
 				
-	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);
-				
-				
-	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
-				
-				
-	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
-				
-				
-	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH);
-				
+	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH); // physical GPIO 17
+	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH); // physical GPIO 22
+	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH); // physical GPIO 19
+	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH); // physical GPIO 4
 	
+	static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27	
 	
 
     public static void main(String srgs[]) {
 
 		String location = ""; 
 		int count = 0;
+		Light light;
 		livingRoomPin.low();
         kitchenPin.low();
         bedroomPin.low();
         bathroomPin.low();
+        
+        String cam = "cam";            	 //filename of where to store the photo
+        
+        //create and register gpio pin listener
+        snapSwitch.addListener(new GpioPinListenerDigital(){
+		@Override	
+			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
+				if(event.getState() == PinState.HIGH){
+					// take a photo
+					System.out.println("Snap action switch triggered, taking a photo");
+					execShellCommand("raspistill -o "+cam+".jpg");
+					execShellCommand("sudo mv -f "+cam+".jpg /home/pi/Desktop");
+				}
+			}
+		});
         
         //hard code to use port 8080
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
@@ -59,11 +75,6 @@ public class host {
                 
                 try {
                     Socket socket = serverSocket.accept();
-             
-            /***  Init GPIO port for output ***/
-            
-								
-       
                     
                try{
 				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -76,14 +87,7 @@ public class host {
 				   System.out.println("Exception with bufferedReader");
 			   }  
             
-				TriggerLight(location);
-					   
-				String cam = "cam";
-             	 
-				 				 				 
-				//execShellCommand("raspistill -o "+cam+".jpg");
-				//execShellCommand("sudo mv -f "+cam+".jpg /home/pi/Desktop");
-			
+				TriggerLight(location);				 				 						
                        
 				count++;
 				System.out.println("Connection!");
