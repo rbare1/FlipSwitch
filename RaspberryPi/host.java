@@ -11,7 +11,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.FileInputStream;
-//import app.src.main.java.house.models.Light;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -32,13 +34,15 @@ public class host {
     static final String GPIO_SWI="19";
     static final GpioController gpio = GpioFactory.getInstance();
 				
-	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH); // physical GPIO 17
-	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH); // physical GPIO 22
-	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH); // physical GPIO 19
-	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH); // physical GPIO 4
+	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);				
+	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
+	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
+	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH);
 	
 	static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27	
 	
+	static String cam = "";
+	static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public static void main(String srgs[]) {
 
@@ -50,17 +54,19 @@ public class host {
         bedroomPin.low();
         bathroomPin.low();
         
-        String cam = "cam";            	 //filename of where to store the photo
-        
+ 
         //create and register gpio pin listener
         snapSwitch.addListener(new GpioPinListenerDigital(){
 		@Override	
 			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
 				if(event.getState() == PinState.HIGH){
 					// take a photo
+					Date date = new Date();
+					cam = dateFormat.format(date).toString();
 					System.out.println("Snap action switch triggered, taking a photo");
+					System.out.println(cam);
 					execShellCommand("raspistill -o "+cam+".jpg");
-					execShellCommand("sudo mv -f "+cam+".jpg /home/pi/Desktop");
+					execShellCommand("sudo mv -f "+cam+".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
 				}
 			}
 		});
