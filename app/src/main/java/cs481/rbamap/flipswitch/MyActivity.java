@@ -73,7 +73,7 @@ public class MyActivity extends Activity {
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
         Audio music1 = new Audio();
-        music1.setName("Trove Lo - Habits(Stay High).mp3");
+        music1.setName("Tove_Lo_-_Habits.mp3");
         Audio[] audioList = new Audio[1];
         audioList[0] = music1;
         if(audioList != null) {
