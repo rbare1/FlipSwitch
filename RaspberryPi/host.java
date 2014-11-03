@@ -46,7 +46,7 @@ public class host {
 
     public static void main(String srgs[]) {
 
-		String location = ""; 
+		String str = "";
 		int count = 0;
 		Light light;
 		livingRoomPin.low();
@@ -84,7 +84,7 @@ public class host {
                     
                try{
 				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				   location = in.readLine();
+				   str = in.readLine();
 				   System.out.println("Room Name " + location + ".");
 				  
 				   
@@ -92,8 +92,11 @@ public class host {
 				   e.printStackTrace();
 				   System.out.println("Exception with bufferedReader");
 			   }  
-            
-				TriggerLight(location);				 				 						
+
+                if(str.contains(".mp3"))
+                    TrigerAudio(str);
+                else
+				    TriggerLight(str);
                        
 				count++;
 				System.out.println("Connection!");
@@ -128,8 +131,12 @@ public class host {
 			
 		}
 	}
-	
-	 private static void TriggerLight(String location){  
+
+    private static void TriggerLight(String str){
+        execShellCommand("omxplayer /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+    }
+
+    private static void TriggerLight(String location){
 	
 		if(location.equals("kitchen")){
 			System.out.println("Turning On Kitchen");
