@@ -83,7 +83,6 @@ public class MyActivity extends Activity {
                 Audio music1 = new Audio();
                 music1.setName(listOfFiles[i]);
                 audioList[i] = music1;
-
         }
 
         if(audioList != null) {
