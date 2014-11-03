@@ -73,7 +73,6 @@ public class host {
 				   System.out.println("Exception with bufferedReader");
 			   }  
 
-                if()
 				TriggerLight(location);
 					   
 				String cam = "cam";
