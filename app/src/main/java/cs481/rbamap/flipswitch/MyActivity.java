@@ -2,6 +2,8 @@ package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,8 +23,11 @@ import android.widget.Toast;
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -72,10 +77,15 @@ public class MyActivity extends Activity {
 
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
-        Audio music1 = new Audio();
-        music1.setName("Tove_Lo_-_Habits.mp3");
-        Audio[] audioList = new Audio[1];
-        audioList[0] = music1;
+        String [] listOfFiles = getAssets().list("Music");
+        Audio[] audioList = new Audio[listOfFiles.length];
+        for (int i = 0; i < listOfFiles.length; i++) {
+                Audio music1 = new Audio();
+                music1.setName(listOfFiles[i]);
+                audioList[i] = music1;
+
+        }
+
         if(audioList != null) {
             displayAudioView(audioList);
         } else {
