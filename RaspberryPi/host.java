@@ -61,9 +61,6 @@ public class host {
                     Socket socket = serverSocket.accept();
              
             /***  Init GPIO port for output ***/
-            
-								
-       
                     
                try{
 				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -75,7 +72,8 @@ public class host {
 				   e.printStackTrace();
 				   System.out.println("Exception with bufferedReader");
 			   }  
-            
+
+                if()
 				TriggerLight(location);
 					   
 				String cam = "cam";
