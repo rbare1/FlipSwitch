@@ -37,7 +37,7 @@ public class host {
 	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);				
 	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
 	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
-	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "bathroomLED", PinState.HIGH);
+	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH);
 	
 	static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27	
 	
@@ -46,9 +46,9 @@ public class host {
 
     public static void main(String srgs[]) {
 
-		String location = ""; 
+		String str = "";
 		int count = 0;
-		Light light;
+		//Light light;
 		livingRoomPin.low();
         kitchenPin.low();
         bedroomPin.low();
@@ -84,16 +84,19 @@ public class host {
                     
                try{
 				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				   location = in.readLine();
-				   System.out.println("Room Name " + location + ".");
+				   str = in.readLine();
+				   System.out.println("String " + str + ".");
 				  
 				   
 			   }   catch(IOException e){	
 				   e.printStackTrace();
 				   System.out.println("Exception with bufferedReader");
 			   }  
-            
-				TriggerLight(location);				 				 						
+
+                if(str.contains(".mp3"))
+                    TriggerAudio(str);
+                else
+				    TriggerLight(str);
                        
 				count++;
 				System.out.println("Connection!");
@@ -128,8 +131,13 @@ public class host {
 			
 		}
 	}
-	
-	 private static void TriggerLight(String location){  
+
+    private static void TriggerAudio(String str){
+		System.out.println("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+        execShellCommand("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+    }
+
+    private static void TriggerLight(String location){
 	
 		if(location.equals("kitchen")){
 			System.out.println("Turning On Kitchen");
