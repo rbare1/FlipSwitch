@@ -1,6 +1,9 @@
 package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,19 +11,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.LightController;
 //import house.mobilecontrollers.SensorController;
+import house.models.Audio;
 import house.models.Light;
 import house.models.Room;
+
 import house.models.Sensor;
 
 
@@ -49,6 +66,29 @@ public class MyActivity extends Activity {
             led.setStatus(0);
         } else if(led.getStatus() == 0){
             led.setStatus(1);
+        }
+    }
+
+    public void triggerAudio(Audio audio) {
+        AudioController controller = new AudioController();
+        Toast.makeText(MyActivity.this, audio.getName(), Toast.LENGTH_SHORT).show();
+        controller.execute(audio);
+    }
+
+    public void getAudioList() throws URISyntaxException, ClientProtocolException,
+            IOException, ParserConfigurationException, SAXException{
+        String [] listOfFiles = getAssets().list("Music");
+        Audio[] audioList = new Audio[listOfFiles.length];
+        for (int i = 0; i < listOfFiles.length; i++) {
+                Audio music1 = new Audio();
+                music1.setName(listOfFiles[i]);
+                audioList[i] = music1;
+        }
+
+        if(audioList != null) {
+            displayAudioView(audioList);
+        } else {
+            Toast.makeText(MyActivity.this, "No Music Found!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -94,6 +134,19 @@ public class MyActivity extends Activity {
                  }
              }
         );
+
+        ImageButton audio = (ImageButton) findViewById(R.id.button_audio);
+        audio.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    getAudioList();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -113,5 +166,54 @@ public class MyActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void displayAudioView(final Audio[] musicName) {
+        // Create Linear layout
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+
+        // Add back button
+        Button backButton = new Button(this);
+        backButton.setText("Back");
+        backButton.setLayoutParams(new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT));
+        backButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                setDefaultView();
+            }
+        });
+
+
+        // Add button to layout
+        layout.addView(backButton);
+
+        String listArray [] = new String[musicName.length];
+        for(int i = 0; i < musicName.length; i++){
+            String str = musicName[i].getName();
+            listArray[i] = str;
+        }
+        ListAdapter la = new ArrayAdapter<String>(this, R.layout.list_item, listArray);
+        ListView lv = new ListView(this);
+        lv.setAdapter(la);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                triggerAudio(musicName[position]);
+            }
+
+        });
+
+        layout.addView(lv);
+        // Make inventory view visible
+        setContentView(layout,llp);
     }
 }
