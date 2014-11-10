@@ -43,61 +43,88 @@ public class roomEvent {
 
 	 public static void main(String srgs[]) { 
 		 
-		heat.low();
+        heat.low();
         cool .low();
 		fan.low();
-		
-		//create and register gpio pin listener
-		snapSwitch.addListener(new GpioPinListenerDigital(){
-			@Override
-			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
-				if(event.getState() == PinState.HIGH){
-					// take a photo
-					Date date = new Date();
-					cam = dateFormat.format(date).toString();
-					System.out.println("Snap action switch triggered, taking a photo");
-					System.out.println(cam);
-					execShellCommand("raspistill -o "+cam+".jpg");
-					execShellCommand("sudo mv -f "+cam+".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
-				}
-			}
-		});
-		
-		while (true) {
-			try{
-				Thread.sleep(4000);
-			}catch(InterruptedException iEx){
-					//
-			}
-			try{
-				String s;
-				int counter = 0;
-				FileReader reader = new FileReader("/sys/bus/w1/devices/28-000006085239/w1_slave");
-				BufferedReader br = new BufferedReader(reader);
-				
-				
-								
-				try{
-					while((s = br.readLine()) != null){
-						//System.out.println(s);
-						counter++;
-						if(counter == 2){
-							calculateTemp(s);													
-						}
-					 }
-				} catch (IOException ex2){
-					//
-				}	
-						
-			} catch (FileNotFoundException ex){
-				System.out.println("File Does not exist");
-			}
-		
-		}
-        
-	}
 
-	private static void execShellCommand(String pCommand){
+         //hard code to use port 8079
+         try (ServerSocket serverSocket = new ServerSocket(8079)) {
+
+             System.out.println("Waiting");
+
+
+             while (true) {
+
+                 try {
+                     Socket socket = serverSocket.accept();
+
+                     try{
+                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                         str = in.readLine();
+                         System.out.println("String " + str + ".");
+
+
+                     }   catch(IOException e){
+                         e.printStackTrace();
+                         System.out.println("Exception with bufferedReader");
+                     }
+
+
+
+                     count++;
+                     System.out.println("Connection!");
+
+                     HostThread thisHostThread = new HostThread(socket, count);
+                     thisHostThread.start();
+
+                 } catch (IOException ex) {
+                     System.out.println(ex.toString());
+                 }
+             }
+         } catch (IOException ex) {
+             System.out.println(ex.toString());
+         }
+        try{
+            Thread.sleep(4000);
+        }catch(InterruptedException iEx){
+                //
+        }
+        try{
+            String s;
+            int counter = 0;
+            FileReader reader = new FileReader("/sys/bus/w1/devices/28-000006085239/w1_slave");
+            BufferedReader br = new BufferedReader(reader);
+
+
+
+            try{
+                while((s = br.readLine()) != null){
+                    //System.out.println(s);
+                    counter++;
+                    if(counter == 2){
+                        calculateTemp(s);
+                    }
+                 }
+            } catch (IOException ex2){
+                //
+            }
+
+        } catch (FileNotFoundException ex){
+            System.out.println("File Does not exist");
+        }
+    }
+
+    private static class HostThread extends Thread{
+
+        private Socket hostThreadSocket;
+
+        HostThread(Socket socket, int c){
+            hostThreadSocket = socket;
+        }
+    }
+
+
+    private static void execShellCommand(String pCommand){
 		try{
 			Runtime run = Runtime.getRuntime();
 			Process pr = run.exec(pCommand);
