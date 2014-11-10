@@ -38,10 +38,12 @@ public class host {
 	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH); //physical GPIO 22
 	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "bedroomLED", PinState.HIGH); //physical GPIO 5
 	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH); //physical GPIO 12
-	
-	static String cam = "";
+
+    static final GpioPinDigitalOutput garageMotor = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "garageMotor", PinState.LOW); //physical GPIO 17
+
+    static final GpioPinDigitalInput garageSensor = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
+
 	static Process audio_pr;
-	static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public static void main(String srgs[]) {
 
@@ -75,10 +77,16 @@ public class host {
 				   System.out.println("Exception with bufferedReader");
 			   }  
 
-                if(str.contains(".mp3"))
+                if(str.contains(".mp3")) {
                     TriggerAudio(str);
-                else
-				    TriggerLight(str);
+                }
+
+                else if(str.equals("garageUp")){
+                    garageOpen(1);
+                }
+                else {
+                    TriggerLight(str);
+                }
                        
 				count++;
 				System.out.println("Connection!");
@@ -136,4 +144,14 @@ public class host {
 			livingRoomPin.toggle();
 		}
 	}
+
+    private static void garageOpen(int garageFlag){
+        System.out.println("Garage open method");
+        if(garageFlag == 0){
+            garageMotor.low();
+        }
+        else{
+            garageMotor.high();
+        }
+    }
 }
