@@ -31,6 +31,7 @@ public class LightController extends AsyncTask<Light, Void, Void>{
         try {
             Log.v("", "Opening Socket");
             Socket socket = new Socket("192.168.163.37", 8080);
+            //Socket socket = new Socket("192.168.171.1", 8080);
             Log.v("", "Opened Socket");
             InputStream inputStream = socket.getInputStream();
             try {
