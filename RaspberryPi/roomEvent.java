@@ -69,7 +69,7 @@ public class roomEvent {
                          System.out.println("Exception with bufferedReader");
                      }
 
-
+                     desiredTemp = str;
 
                      count++;
                      System.out.println("Connection!");

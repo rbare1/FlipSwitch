@@ -24,7 +24,6 @@ public class RoomController extends AsyncTask<Sensor, Void, Void>{
 
     protected Void doInBackground(Sensor... sensor) {
         Sensor thisSensor = sensor[0];
-
         try {
             Log.v("", "Opening Socket");
             Socket socket = new Socket("192.168.163.37", 8079);

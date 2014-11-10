@@ -9,6 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import house.mobilecontrollers.AudioController;
+import house.mobilecontrollers.RoomController;
+import house.models.Sensor;
 
 
 public class LivingRoom extends Activity {
@@ -33,6 +38,10 @@ public class LivingRoom extends Activity {
             public void onClick(View v){
                 temp++;
                 tempText.setText(String.valueOf(temp));
+                RoomController controller = new RoomController();
+                Sensor sensor = new Sensor();
+                sensor.setInfo(Integer.toString(temp));
+                controller.execute(sensor);
             }
         });
     }
@@ -43,6 +52,10 @@ public class LivingRoom extends Activity {
             public void onClick(View v){
                 temp--;
                 tempText.setText(String.valueOf(temp));
+                RoomController controller = new RoomController();
+                Sensor sensor = new Sensor();
+                sensor.setInfo(Integer.toString(temp));
+                controller.execute(sensor);
             }
         });
     }
