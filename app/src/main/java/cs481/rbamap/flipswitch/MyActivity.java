@@ -146,6 +146,7 @@ public class MyActivity extends Activity {
                      Room livingRoom = new Room();
                      livingRoom.setName("living room");
                      triggerLight(livingRoom);
+                     setContentView(R.layout.activity_living_room);
                  }
              }
         );
