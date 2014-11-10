@@ -30,12 +30,13 @@ public class roomEvent {
 	
 	static final GpioController gpio = GpioFactory.getInstance();
 				
+	static final GpioPinDigitalOutput fan = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "fan", PinState.HIGH);	//physical GPIO 6	
 	static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "heatingLED", PinState.HIGH);	//physical GPIO 25			
 	static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "collingLED", PinState.HIGH); //physical GPIO 16
 	static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
 
 	static String cam = "";
-	static float desiredTemp = 74.00f;
+	static float desiredTemp = 75.00f;
 	static float cs =0.00f;
 	static float fs = 0.00f;
 	static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -44,7 +45,8 @@ public class roomEvent {
 		 
 		heat.low();
         cool .low();
-		 
+		fan.low();
+		
 		//create and register gpio pin listener
 		snapSwitch.addListener(new GpioPinListenerDigital(){
 			@Override
@@ -107,15 +109,21 @@ public class roomEvent {
 	
 	private static void calculateTemp(String s){
 		cs = Float.parseFloat(s.substring(s.lastIndexOf("=") + 1)) / 1000;
-		fs = cs * 1.800f + 32.00f;
+		fs = Math.round(cs * 1.800f + 32.00f);
 		System.out.println(fs);
-		if(fs > desiredTemp)
+		if(fs > desiredTemp){
 			cool.high();
-		else if(fs < desiredTemp)
+			heat.low();
+			fan.high();
+		}else if(fs < desiredTemp){
 			heat.high();
-		else
+			cool.low();
+			fan.high();
+		}else{
 			cool.low();
             heat.low();
+            fan.low();
+         }
 	}
 
 }
