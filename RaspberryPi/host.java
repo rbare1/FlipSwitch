@@ -34,14 +34,13 @@ public class host {
     static final String GPIO_SWI="19";
     static final GpioController gpio = GpioFactory.getInstance();
 				
-	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LivingRoomLED", PinState.HIGH);				
-	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH);
-	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_24, "bedroomLED", PinState.HIGH);
-	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH);
-	
-	static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27	
+	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_23, "LivingRoomLED", PinState.HIGH);	//physical GPIO 13			
+	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH); //physical GPIO 22
+	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "bedroomLED", PinState.HIGH); //physical GPIO 5
+	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH); //physical GPIO 12
 	
 	static String cam = "";
+	static Process audio_pr;
 	static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public static void main(String srgs[]) {
@@ -53,24 +52,7 @@ public class host {
         kitchenPin.low();
         bedroomPin.low();
         bathroomPin.low();
-        
- 
-        //create and register gpio pin listener
-        snapSwitch.addListener(new GpioPinListenerDigital(){
-		@Override	
-			public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
-				if(event.getState() == PinState.HIGH){
-					// take a photo
-					Date date = new Date();
-					cam = dateFormat.format(date).toString();
-					System.out.println("Snap action switch triggered, taking a photo");
-					System.out.println(cam);
-					execShellCommand("raspistill -o "+cam+".jpg");
-					execShellCommand("sudo mv -f "+cam+".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
-				}
-			}
-		});
-        
+                
         //hard code to use port 8080
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             
@@ -122,19 +104,20 @@ public class host {
         }
     }
     
-    private static void execShellCommand(String pCommand){
+    private static void execShellCommandAudio(String pCommand){
 		try{
 			Runtime run = Runtime.getRuntime();
-			Process pr = run.exec(pCommand);
-			pr.waitFor();
-		} catch (IOException | InterruptedException ex){
-			
-		}
+			audio_pr = run.exec(pCommand);
+		} catch (IOException ex){
+			//
+        }
+
 	}
 
     private static void TriggerAudio(String str){
 		System.out.println("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
-        execShellCommand("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+		execShellCommandAudio("^C");
+        execShellCommandAudio("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
     }
 
     private static void TriggerLight(String location){
