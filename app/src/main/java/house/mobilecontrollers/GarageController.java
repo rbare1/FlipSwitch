@@ -15,33 +15,31 @@ import java.io.PrintWriter;
 //as a start
 
 import house.models.Camera;
+import house.models.Door;
 import house.models.Light;
 import house.models.Room;
 
-/**
- * Created by Mandy on 9/22/2014.
- */
 
-public class CameraController extends AsyncTask<Camera, Void, Void>{
+public class GarageController extends AsyncTask<Door, Void, Void>{
     String dstAddress;
     int dstPort;
     String response;
 
 
-    protected Void doInBackground(Camera... Void) {
+    protected Void doInBackground(Door... Void) {
         try {
             Log.v("", "Opening Socket");
-            //Socket socket = new Socket("192.168.163.37", 8080);
-            Socket socket = new Socket("192.168.171.1", 8080);
+            Socket socket = new Socket("192.168.163.37", 8080);
+            //Socket socket = new Socket("192.168.171.1", 8080);
             Log.v("", "Opened Socket");
 
             try {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                out.write("cam");
+                out.write("garageUp");
                 out.flush();
             } catch (IOException e) {
-                          // TODO Auto-generated catch block
-                        e.printStackTrace();
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
             Log.v("", "Closing Socket");
             socket.close();
