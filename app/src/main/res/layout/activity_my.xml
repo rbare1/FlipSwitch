@@ -28,13 +28,13 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton3"
+                android:id="@+id/preset1_Button"
                 android:src="@drawable/preset1_icon" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton9"
+                android:id="@+id/preset2_Button"
                 android:src="@drawable/preset2_icon" />
 
             <ImageButton
