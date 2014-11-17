@@ -3,6 +3,7 @@ package cs481.rbamap.flipswitch;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,25 +19,28 @@ import house.models.Sensor;
 
 public class LivingRoom extends Activity {
 
-    TextView tempText;
     int temp = 70; //should probably be saved in a file and then pulled for persistence between runs
 
-    @Override
+   @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setDefaultView();
+    }
+
+    public void setDefaultView(){
         setContentView(R.layout.activity_living_room);
-        tempText = (TextView) findViewById(R.id.lr_tempTextView);
+        TextView tempText = (TextView) findViewById(R.id.lr_tempText);
         tempText.setText(String.valueOf(temp));
-        setupTempUpButton();
         setupTempDownButton();
+        setupTempUpButton();
     }
 
     private void setupTempUpButton(){
-        tempText = (TextView) findViewById(R.id.lr_tempTextView);
         Button lr_Button = (Button) findViewById(R.id.lr_tempUpButton);
         lr_Button.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v){
                 temp++;
+                TextView tempText = (TextView) findViewById(R.id.lr_tempText);
                 tempText.setText(String.valueOf(temp));
                 RoomController controller = new RoomController();
                 Sensor sensor = new Sensor();
@@ -46,11 +50,11 @@ public class LivingRoom extends Activity {
         });
     }
     private void setupTempDownButton(){
-        tempText = (TextView) findViewById(R.id.lr_tempTextView);
         Button lr_Button = (Button) findViewById(R.id.lr_tempDownButton);
         lr_Button.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v){
                 temp--;
+                TextView tempText = (TextView) findViewById(R.id.lr_tempText);
                 tempText.setText(String.valueOf(temp));
                 RoomController controller = new RoomController();
                 Sensor sensor = new Sensor();
