@@ -54,6 +54,17 @@ public class host {
         kitchenPin.low();
         bedroomPin.low();
         bathroomPin.low();
+
+        //create and register gpio pin listener
+        garageSensor.addListener(new GpioPinListenerDigital(){
+            @Override
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
+                if(event.getState() == PinState.HIGH){
+                    System.out.println("garage door stop");
+                    garageOpen(0);
+                }
+            }
+        });
                 
         //hard code to use port 8080
         try (ServerSocket serverSocket = new ServerSocket(8080)) {

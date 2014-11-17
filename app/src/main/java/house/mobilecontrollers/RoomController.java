@@ -26,8 +26,8 @@ public class RoomController extends AsyncTask<Sensor, Void, Void>{
         Sensor thisSensor = sensor[0];
         try {
             Log.v("", "Opening Socket");
-            Socket socket = new Socket("192.168.163.37", 8079);
-            //Socket socket = new Socket("192.168.171.1", 8080);
+            //Socket socket = new Socket("192.168.163.37", 8079);
+            Socket socket = new Socket("192.168.171.1", 8079);
             Log.v("", "Opened Socket");
             InputStream inputStream = socket.getInputStream();
             try {
