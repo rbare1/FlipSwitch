@@ -146,7 +146,6 @@ public class MyActivity extends Activity {
                      Room livingRoom = new Room();
                      livingRoom.setName("living room");
                      triggerLight(livingRoom);
-                     setContentView(R.layout.activity_living_room);
                  }
              }
         );
@@ -188,6 +187,14 @@ public class MyActivity extends Activity {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+            }
+        });
+        ImageButton temperatureButton = (ImageButton) findViewById(R.id.tempButton);
+        temperatureButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyActivity.this, LivingRoom.class);
+                startActivity(intent);
             }
         });
     }
