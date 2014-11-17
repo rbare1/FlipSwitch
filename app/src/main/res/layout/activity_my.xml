@@ -167,6 +167,17 @@
                 android:layout_toLeftOf="@+id/button_LivingRoomLight"
                 android:layout_toStartOf="@+id/button_LivingRoomLight" />
 
+            <ImageButton
+                android:layout_width="140dp"
+                android:layout_height="138dp"
+                android:id="@+id/button_camera"
+                android:src="@drawable/camera_icon"
+                android:layout_toRightOf="@+id/imageButton2"
+                android:layout_toEndOf="@+id/imageButton2"
+                android:layout_alignBottom="@+id/horizontalScrollView8"
+                android:layout_toLeftOf="@+id/button_LivingRoomLight"
+                android:layout_toStartOf="@+id/button_LivingRoomLight" />
+
         </LinearLayout>
     </HorizontalScrollView>
 

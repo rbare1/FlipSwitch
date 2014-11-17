@@ -32,9 +32,12 @@ import java.net.URLClassLoader;
 import javax.xml.parsers.ParserConfigurationException;
 
 import house.mobilecontrollers.AudioController;
+import house.mobilecontrollers.CameraController;
+import house.mobilecontrollers.GarageController;
 import house.mobilecontrollers.LightController;
-//import house.mobilecontrollers.SensorController;
 import house.models.Audio;
+import house.models.Camera;
+import house.models.Door;
 import house.models.Light;
 import house.models.Room;
 
@@ -75,6 +78,18 @@ public class MyActivity extends Activity {
         controller.execute(audio);
     }
 
+    public void triggerCamera(Camera camera) {
+        CameraController controller = new CameraController();
+        Log.v("Event", "Camera triggered");
+        controller.execute(camera);
+    }
+
+    public void triggerGarageUp(Door garageDoor) {
+        GarageController controller = new GarageController();
+        Log.v("Event", "Garage up triggered");
+        controller.execute(garageDoor);
+    }
+
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
         String [] listOfFiles = getAssets().list("Music");
@@ -97,13 +112,13 @@ public class MyActivity extends Activity {
 
        ImageButton bathroomLight = (ImageButton) findViewById(R.id.button_BathroomLight);
        bathroomLight.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                Room bathroom = new Room();
-                bathroom.setName("bathroom");
-                triggerLight(bathroom);
-             }
-         }
-        );
+                                            public void onClick(View v) {
+                                                Room bathroom = new Room();
+                                                bathroom.setName("bathroom");
+                                                triggerLight(bathroom);
+                                            }
+                                        }
+       );
 
         ImageButton bedroomLight = (ImageButton) findViewById(R.id.button_BedroomLight);
         bedroomLight.setOnClickListener(new Button.OnClickListener() {
@@ -142,6 +157,33 @@ public class MyActivity extends Activity {
             public void onClick(View v) {
                 try {
                     getAudioList();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ImageButton camera = (ImageButton) findViewById(R.id.button_camera);
+        camera.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Camera cam = new Camera();
+                    triggerCamera(cam);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton garageUp = (ImageButton) findViewById(R.id.open_garage);
+        garageUp.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Door garageDoor = new Door();
+                    triggerGarageUp(garageDoor);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

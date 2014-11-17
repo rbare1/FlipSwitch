@@ -1,9 +1,11 @@
 package house.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Mandy on 9/22/2014.
  */
-public class Light {
+public class Light implements Serializable{
     private String name;
     private Room location;
     private int status;
