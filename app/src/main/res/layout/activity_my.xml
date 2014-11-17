@@ -159,7 +159,7 @@
             <ImageButton
                 android:layout_width="140dp"
                 android:layout_height="138dp"
-                android:id="@+id/lightButton3"
+                android:id="@+id/tempButton"
                 android:src="@drawable/temp_icon"
                 android:layout_toRightOf="@+id/imageButton2"
                 android:layout_toEndOf="@+id/imageButton2"

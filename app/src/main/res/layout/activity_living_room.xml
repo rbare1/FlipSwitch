@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/LivingRoom"
@@ -17,16 +17,24 @@
         android:layout_column="0" />
 
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/back_button"
+        android:layout_row="1"
+        android:layout_column="5" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Insert Temp Here"
-        android:id="@+id/lr_tempTextView"
+        android:text="@string/temperature"
+        android:id="@+id/lr_tempText"
         android:layout_gravity="right"
         android:layout_weight="0.09"
-        android:layout_row="1"
+        android:layout_row="2"
         android:layout_column="0" />
 
     <Button
@@ -35,7 +43,7 @@
         android:layout_height="wrap_content"
         android:text="Temp Up"
         android:id="@+id/lr_tempUpButton"
-        android:layout_row="2"
+        android:layout_row="3"
         android:layout_column="0" />
 
     <Button
@@ -44,8 +52,9 @@
         android:layout_height="wrap_content"
         android:text="Temp Down"
         android:id="@+id/lr_tempDownButton"
-        android:layout_row="2"
+        android:layout_row="3"
         android:layout_column="4" />
 
 
-</GridLayout>
+
+</android.support.v4.widget.DrawerLayout>
