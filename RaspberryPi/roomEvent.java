@@ -25,16 +25,16 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 public class roomEvent {
-static final GpioController gpio = GpioFactory.getInstance();
-static final GpioPinDigitalOutput fan = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "fan", PinState.HIGH); //physical GPIO 6
-static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "heatingLED", PinState.HIGH); //physical GPIO 25
-static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "collingLED", PinState.HIGH); //physical GPIO 16
-static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
-static String cam = "";
-static float desiredTemp = 75.00f;
-static float cs =0.00f;
-static float fs = 0.00f;
-static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    static final GpioController gpio = GpioFactory.getInstance();
+    static final GpioPinDigitalOutput fan = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "fan", PinState.HIGH); //physical GPIO 6
+    static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "heatingLED", PinState.HIGH); //physical GPIO 25
+    static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "collingLED", PinState.HIGH); //physical GPIO 16
+    static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
+    static String cam = "";
+    static float desiredTemp = 75.00f;
+    static float cs =0.00f;
+    static float fs = 0.00f;
+    static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
     public static void main(String srgs[]) {
         String str = "";
@@ -43,60 +43,60 @@ static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         cool .low();
         fan.low();
 
-    //create and register gpio pin listener
+        //create and register gpio pin listener
         snapSwitch.addListener(new GpioPinListenerDigital(){
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
                 if(event.getState() == PinState.HIGH){
-                // take a photo
-                Date date = new Date();
-                cam = dateFormat.format(date).toString();
-                System.out.println("Snap action switch triggered, taking a photo");
-                System.out.println(cam);
-                execShellCommand("raspistill -o "+cam+".jpg");
-                execShellCommand("sudo mv -f "+cam+".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
+                    // take a photo
+                    Date date = new Date();
+                    cam = dateFormat.format(date).toString();
+                    System.out.println("Snap action switch triggered, taking a photo");
+                    System.out.println(cam);
+                    execShellCommand("raspistill -o "+cam+".jpg");
+                    execShellCommand("sudo mv -f "+cam+".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
                 }
             }
         });
 
         try (ServerSocket serverSocket = new ServerSocket(8079)) {
-			
+
             System.out.println("Waiting");
-            
-            
+
+
             while (true) {
-				
-				try {
-                        Thread.sleep(4000);
-                    } catch (InterruptedException iEx) {
+
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException iEx) {
+                    //
+                }
+                try {
+                    String s;
+                    int counter = 0;
+                    FileReader reader = new FileReader("/sys/bus/w1/devices/28-000006085239/w1_slave");
+                    BufferedReader br = new BufferedReader(reader);
+                    try {
+                        while ((s = br.readLine()) != null) {
+                            //System.out.println(s);
+                            counter++;
+                            if (counter == 2) {
+                                calculateTemp(s);
+                            }
+                        }
+                    } catch (IOException ex2) {
                         //
                     }
-				try {
-					String s;
-					int counter = 0;
-					FileReader reader = new FileReader("/sys/bus/w1/devices/28-000006085239/w1_slave");
-					BufferedReader br = new BufferedReader(reader);
-					try {
-						while ((s = br.readLine()) != null) {
-							//System.out.println(s);
-							counter++;
-							if (counter == 2) {
-								calculateTemp(s);
-							}
-						}
-					} catch (IOException ex2) {
-						//
-					}
-				} catch (FileNotFoundException ex) {
-					System.out.println("File Does not exist");
-				}
+                } catch (FileNotFoundException ex) {
+                    System.out.println("File Does not exist");
+                }
 
 
                 try {
                     Socket socket = serverSocket.accept();
                     System.out.println("Socket Accepted");
                     System.out.println(socket.getReceiveBufferSize());
-                    
+
                     try{
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         str = in.readLine();
