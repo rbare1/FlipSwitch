@@ -35,6 +35,7 @@ import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.CameraController;
 import house.mobilecontrollers.GarageController;
 import house.mobilecontrollers.LightController;
+import house.mobilecontrollers.PlayerController;
 import house.models.Audio;
 import house.models.Camera;
 import house.models.Door;
@@ -88,6 +89,12 @@ public class MyActivity extends Activity {
         GarageController controller = new GarageController();
         Log.v("Event", "Garage up triggered");
         controller.execute(garageDoor);
+    }
+
+    public void triggerAudioChange(String str){
+        PlayerController controller = new PlayerController();
+        Log.v("Event", "Change in audio");
+        controller.execute(str);
     }
 
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
@@ -184,6 +191,30 @@ public class MyActivity extends Activity {
                 try {
                     Door garageDoor = new Door();
                     triggerGarageUp(garageDoor);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton audioPause = (ImageButton) findViewById(R.id.preset1_Button);
+        audioPause.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    triggerAudioChange("audioP");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton audioStop = (ImageButton) findViewById(R.id.preset2_Button);
+        audioStop.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    triggerAudioChange("audioS");
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
