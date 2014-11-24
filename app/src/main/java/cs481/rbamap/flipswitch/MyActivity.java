@@ -2,8 +2,6 @@ package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,11 +21,8 @@ import android.widget.Toast;
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -35,13 +30,12 @@ import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.CameraController;
 import house.mobilecontrollers.GarageController;
 import house.mobilecontrollers.LightController;
+import house.mobilecontrollers.PlayerController;
 import house.models.Audio;
 import house.models.Camera;
 import house.models.Door;
 import house.models.Light;
 import house.models.Room;
-
-import house.models.Sensor;
 
 
 public class MyActivity extends Activity {
@@ -84,6 +78,12 @@ public class MyActivity extends Activity {
         controller.execute(camera);
     }
 
+    public void triggerAudioChange(String str){
+        PlayerController controller = new PlayerController();
+        Log.v("Event", "Change in audio");
+        controller.execute(str);
+    }
+
     public void triggerGarageUp(Door garageDoor) {
         GarageController controller = new GarageController();
         Log.v("Event", "Garage up triggered");
@@ -95,9 +95,9 @@ public class MyActivity extends Activity {
         String [] listOfFiles = getAssets().list("Music");
         Audio[] audioList = new Audio[listOfFiles.length];
         for (int i = 0; i < listOfFiles.length; i++) {
-                Audio music1 = new Audio();
-                music1.setName(listOfFiles[i]);
-                audioList[i] = music1;
+            Audio music1 = new Audio();
+            music1.setName(listOfFiles[i]);
+            audioList[i] = music1;
         }
 
         if(audioList != null) {
@@ -110,45 +110,44 @@ public class MyActivity extends Activity {
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
 
-       ImageButton bathroomLight = (ImageButton) findViewById(R.id.button_BathroomLight);
-       bathroomLight.setOnClickListener(new Button.OnClickListener() {
-                                            public void onClick(View v) {
-                                                Room bathroom = new Room();
-                                                bathroom.setName("bathroom");
-                                                triggerLight(bathroom);
-                                            }
-                                        }
-       );
+        ImageButton bathroomLight = (ImageButton) findViewById(R.id.button_BathroomLight);
+        bathroomLight.setOnClickListener(new Button.OnClickListener() {
+                                             public void onClick(View v) {
+                                                 Room bathroom = new Room();
+                                                 bathroom.setName("bathroom");
+                                                 triggerLight(bathroom);
+                                             }
+                                         }
+        );
 
         ImageButton bedroomLight = (ImageButton) findViewById(R.id.button_BedroomLight);
         bedroomLight.setOnClickListener(new Button.OnClickListener() {
-             public void onClick(View v) {
-                 Room bedroom = new Room();
-                 bedroom.setName("bedroom");
-                 triggerLight(bedroom);
-             }
-         }
+                                            public void onClick(View v) {
+                                                Room bedroom = new Room();
+                                                bedroom.setName("bedroom");
+                                                triggerLight(bedroom);
+                                            }
+                                        }
         );
 
         ImageButton kitchenLight = (ImageButton) findViewById(R.id.button_KitchenLight);
         kitchenLight.setOnClickListener(new Button.OnClickListener() {
-                 public void onClick(View v) {
-                     Room kitchen = new Room();
-                     kitchen.setName("kitchen");
-                     triggerLight(kitchen);
-                 }
-             }
+                                            public void onClick(View v) {
+                                                Room kitchen = new Room();
+                                                kitchen.setName("kitchen");
+                                                triggerLight(kitchen);
+                                            }
+                                        }
         );
 
         ImageButton livingRoomLight = (ImageButton) findViewById(R.id.button_LivingRoomLight);
         livingRoomLight.setOnClickListener(new Button.OnClickListener() {
-                 public void onClick(View v) {
-                     Room livingRoom = new Room();
-                     livingRoom.setName("living room");
-                     triggerLight(livingRoom);
-                     setContentView(R.layout.activity_living_room);
-                 }
-             }
+                                               public void onClick(View v) {
+                                                   Room livingRoom = new Room();
+                                                   livingRoom.setName("living room");
+                                                   triggerLight(livingRoom);
+                                               }
+                                           }
         );
 
         ImageButton audio = (ImageButton) findViewById(R.id.button_audio);
@@ -190,6 +189,40 @@ public class MyActivity extends Activity {
                 }
             }
         });
+        ImageButton temperatureButton = (ImageButton) findViewById(R.id.tempButton);
+        temperatureButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyActivity.this, LivingRoom.class);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton audioPause = (ImageButton) findViewById(R.id.preset1_Button);
+        audioPause.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    triggerAudioChange("audioP");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton audioStop = (ImageButton) findViewById(R.id.preset2_Button);
+        audioStop.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    triggerAudioChange("audioS");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -203,7 +236,7 @@ public class MyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in AndroidManifes t.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
