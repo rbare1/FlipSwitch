@@ -14,6 +14,9 @@ import java.io.FileInputStream;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.io.BufferedOutputStream;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -45,9 +48,11 @@ public class host {
 
 	static Process audio_pr;
 
+	static int audio = 0;
     public static void main(String srgs[]) {
 
 		String str = "";
+		String output;
 		int count = 0;
 		//Light light;
 		livingRoomPin.low();
@@ -77,17 +82,20 @@ public class host {
                 try {
                     Socket socket = serverSocket.accept();
                     
-               try{
-				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				   str = in.readLine();
-				   System.out.println("String " + str + ".");
+               
+			   try{
+					 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					while((output = in.readLine()) != null){
+						JSONObject json = new JSONObject(output);
+						str = json.getString("Room Name");
+					}
+			   }catch(IOException | JSONException e2){
+				   
+			   }
+			   System.out.println(str);
 				  
 				   
-			   }   catch(IOException e){	
-				   e.printStackTrace();
-				   System.out.println("Exception with bufferedReader");
-			   }  
-
+			  
                 if(str.contains(".mp3")) {
                     TriggerAudio(str);
                 }
@@ -95,6 +103,12 @@ public class host {
                 else if(str.equals("garageUp")){
                     garageOpen(1);
                 }
+                else if(str.equals("audioP")){
+					PauseAudio();
+				}
+				else if(str.equals("audioS")){
+					StopAudio();
+				}
                 else {
                     TriggerLight(str);
                 }
@@ -125,19 +139,45 @@ public class host {
     
     private static void execShellCommandAudio(String pCommand){
 		try{
-			Runtime run = Runtime.getRuntime();
-			audio_pr = run.exec(pCommand);
+			if(audio == 0){
+				Runtime run = Runtime.getRuntime();
+				audio_pr = run.exec("mpg321 -R music");
+			}
+			OutputStream audioStream = audio_pr.getOutputStream();
+			audioStream.write(pCommand.getBytes());
+			audioStream.flush();
+//audio_pr = run.exec(pCommand);
 		} catch (IOException ex){
 			//
-        }
+        }		
 
 	}
 
     private static void TriggerAudio(String str){
-		System.out.println("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+		/*System.out.println("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
 		execShellCommandAudio("^C");
-        execShellCommandAudio("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+        execShellCommandAudio("omxplayer -o local /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);*/
+        if(audio == 1){
+			StopAudio();
+		}
+		System.out.println("mpg321 -R music \nLOAD /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+		execShellCommandAudio("LOAD /home/pi/git/FlipSwitch/RaspberryPi/Music/" + str);
+		audio = 1;	
     }
+    
+    private static void PauseAudio(){
+		System.out.println("Pausing Audio");
+		execShellCommandAudio("P");
+	}
+	
+	private static void StopAudio(){
+		System.out.println("Stopping Audio");
+		execShellCommandAudio("Q");
+		if(audio == 1){
+			audio_pr.destroy();
+		}
+		audio = 0;
+	}
 
     private static void TriggerLight(String location){
 	

@@ -21,7 +21,7 @@ public class LivingRoom extends Activity {
 
     int temp = 70; //should probably be saved in a file and then pulled for persistence between runs
 
-   @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setDefaultView();
