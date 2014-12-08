@@ -119,7 +119,7 @@ public class host {
 
     private static void takePhoto(String fileName){
         execShellCommand("raspistill -o "+ fileName +".jpg");
-        //execShellCommand("sudo mv -f "+ fileName +".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
-        execShellCommand("sudo mv -f "+ fileName +".jpg /var/lib/btsync");
+        execShellCommand("sudo mv -f "+ fileName +".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
+        //execShellCommand("sudo mv -f "+ fileName +".jpg /var/lib/btsync");
     }
 }
