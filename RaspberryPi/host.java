@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.io.BufferedOutputStream;
 import org.json.JSONObject;
 import org.json.JSONException;
+import com.fasterxml.jackson.*;
+import java.io.*;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -41,7 +43,6 @@ public class host {
 	static final GpioPinDigitalOutput kitchenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "kitchenLED", PinState.HIGH); //physical GPIO 22
 	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "bedroomLED", PinState.HIGH); //physical GPIO 5
 	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH); //physical GPIO 12
-
     static final GpioPinDigitalOutput garageMotor = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "garageMotor", PinState.LOW); //physical GPIO 17
 
     static final GpioPinDigitalInput garageSensor = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
@@ -84,12 +85,18 @@ public class host {
                     
                
 			   try{
-					 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					while((output = in.readLine()) != null){
-						JSONObject json = new JSONObject(output);
-						str = json.getString("Room Name");
+				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                   String className = in.readLine();
+                   Class<?> cls = Class.forName(className);
+                   String data = in.readLine();
+                   Object obj = JSON.getObjectMapper().readValue(new StringReader(data), cls);
+					if(obj instanceof Light){
+						System.out.println("Instance working");
+						Light light = JSON.getObjectMapper().convertValue(data, Light.class);
+						str = light.getLocation().getName();
 					}
-			   }catch(IOException | JSONException e2){
+					//}
+			   }catch(IOException e2){
 				   
 			   }
 			   System.out.println(str);

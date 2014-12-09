@@ -18,8 +18,7 @@ public class Room {
         return name;
     }
 
-    public int setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return 1;
     }
 }
