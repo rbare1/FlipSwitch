@@ -76,7 +76,7 @@ public class host {
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             
             System.out.println("Waiting");
-            
+           
                        
             while (true) {
                 
@@ -87,12 +87,18 @@ public class host {
 			   try{
 				   BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                    String className = in.readLine();
-                   Class<?> cls = Class.forName(className);
+                   System.out.println(className.toString());
+                   Class<?> cls = String.class;
+                   try{
+					cls = Class.forName(className);
+                   }catch(ClassNotFoundException e2){
+						
+					}
                    String data = in.readLine();
                    Object obj = JSON.getObjectMapper().readValue(new StringReader(data), cls);
 					if(obj instanceof Light){
 						System.out.println("Instance working");
-						Light light = JSON.getObjectMapper().convertValue(data, Light.class);
+						Light light = (Light) obj;
 						str = light.getLocation().getName();
 					}
 					//}
