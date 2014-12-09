@@ -2,6 +2,8 @@ package cs481.rbamap.flipswitch;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,8 +23,11 @@ import android.widget.Toast;
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -30,12 +35,13 @@ import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.CameraController;
 import house.mobilecontrollers.GarageController;
 import house.mobilecontrollers.LightController;
-import house.mobilecontrollers.PlayerController;
 import house.models.Audio;
 import house.models.Camera;
 import house.models.Door;
 import house.models.Light;
 import house.models.Room;
+
+import house.models.Sensor;
 
 
 public class MyActivity extends Activity {
@@ -78,18 +84,16 @@ public class MyActivity extends Activity {
         controller.execute(camera);
     }
 
-    public void triggerAudioChange(String str){
-        PlayerController controller = new PlayerController();
-        Log.v("Event", "Change in audio");
-        controller.execute(str);
-    }
-
     public void triggerGarageUp(Door garageDoor) {
         GarageController controller = new GarageController();
         Log.v("Event", "Garage up triggered");
         controller.execute(garageDoor);
     }
-
+    public void triggerAudioChange(String str){
+        PlayerController controller = new PlayerController();
+        Log.v("Event", "Change in audio");
+        controller.execute(str);
+    }
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
         String [] listOfFiles = getAssets().list("Music");
@@ -109,6 +113,14 @@ public class MyActivity extends Activity {
 
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
+        ImageButton preset3 = (ImageButton) findViewById(R.id.preset3_Button);
+        preset3.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyActivity.this, Presets.class);
+                startActivity(intent);
+            }
+        });
 
         ImageButton bathroomLight = (ImageButton) findViewById(R.id.button_BathroomLight);
         bathroomLight.setOnClickListener(new Button.OnClickListener() {
@@ -160,6 +172,14 @@ public class MyActivity extends Activity {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
+            }
+        });
+        ImageButton temperatureButton = (ImageButton) findViewById(R.id.tempButton);
+        temperatureButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyActivity.this, LivingRoom.class);
+                startActivity(intent);
             }
         });
 
@@ -236,7 +256,7 @@ public class MyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifes t.xml.
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;

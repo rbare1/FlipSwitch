@@ -40,7 +40,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton7"
+                android:id="@+id/preset3_Button"
                 android:src="@drawable/preset3_icon"
                 android:layout_below="@+id/horizontalScrollView3"
                 android:layout_alignParentRight="true"
