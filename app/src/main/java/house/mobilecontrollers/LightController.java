@@ -29,22 +29,8 @@ import house.models.Room;
  */
 
 public class LightController extends AsyncTask<Light, Void, Void>{
-    String dstAddress;
-    int dstPort;
-    String response;
-
-
     protected Void doInBackground(Light... light) {
-        Room room = light[0].getLocation();
-        String roomName = room.getName();
-        JSONObject json = new JSONObject();
-        try {
-            json.put("Object", "light");
-            json.put("Room Name", light[0].getLocation().getName());
-            Log.v("json test1", json.get("Room Name").toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         try {
             Log.v("", "Opening Socket");
             Socket socket = new Socket("192.168.163.37", 8080);

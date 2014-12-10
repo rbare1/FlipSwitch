@@ -74,7 +74,7 @@ public class MyActivity extends Activity {
 
     public void triggerAudio(Audio audio) {
         AudioController controller = new AudioController();
-        Toast.makeText(MyActivity.this, audio.getName(), Toast.LENGTH_SHORT).show();
+        audio.setStatus(1);
         controller.execute(audio);
     }
 
@@ -89,10 +89,11 @@ public class MyActivity extends Activity {
         Log.v("Event", "Garage up triggered");
         controller.execute(garageDoor);
     }
-    public void triggerAudioChange(String str){
-        PlayerController controller = new PlayerController();
-        Log.v("Event", "Change in audio");
-        controller.execute(str);
+    public void triggerAudioChange(){
+        Audio audio = new Audio();
+        AudioController controller = new AudioController();
+        audio.setStatus(0);
+        controller.execute(audio);
     }
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
@@ -209,33 +210,13 @@ public class MyActivity extends Activity {
                 }
             }
         });
-        ImageButton temperatureButton = (ImageButton) findViewById(R.id.tempButton);
-        temperatureButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MyActivity.this, LivingRoom.class);
-                startActivity(intent);
-            }
-        });
 
-        ImageButton audioPause = (ImageButton) findViewById(R.id.preset1_Button);
-        audioPause.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    triggerAudioChange("audioP");
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-        ImageButton audioStop = (ImageButton) findViewById(R.id.preset2_Button);
+        ImageButton audioStop = (ImageButton) findViewById(R.id.button_stop);
         audioStop.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    triggerAudioChange("audioS");
+                    triggerAudioChange();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.RoomController;
+import house.mobilecontrollers.SensorController;
 import house.models.Sensor;
 
 
@@ -42,7 +43,7 @@ public class LivingRoom extends Activity {
                 temp++;
                 TextView tempText = (TextView) findViewById(R.id.lr_tempText);
                 tempText.setText(String.valueOf(temp));
-                RoomController controller = new RoomController();
+                SensorController controller = new SensorController();
                 Sensor sensor = new Sensor();
                 sensor.setInfo(Integer.toString(temp));
                 controller.execute(sensor);
@@ -56,7 +57,7 @@ public class LivingRoom extends Activity {
                 temp--;
                 TextView tempText = (TextView) findViewById(R.id.lr_tempText);
                 tempText.setText(String.valueOf(temp));
-                RoomController controller = new RoomController();
+                SensorController controller = new SensorController();
                 Sensor sensor = new Sensor();
                 sensor.setInfo(Integer.toString(temp));
                 controller.execute(sensor);
