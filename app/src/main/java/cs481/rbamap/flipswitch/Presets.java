@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,9 +12,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
+
+import house.models.Preset;
 
 
 public class Presets extends Activity {
@@ -33,50 +39,36 @@ public class Presets extends Activity {
     }
 
     private void executeSaveSettings() throws IOException {
-        Log.v("Spinner", presetSpinner.getSelectedItem().toString());
-        FileOutputStream fos = openFileOutput(presetSpinner.getSelectedItem().toString(), Context.MODE_PRIVATE);
+        Preset preset = new Preset("0", "0", "0", "0", "0", "0");
         if(bathroomCB.isChecked()){
-            fos.write("1,".getBytes());
-        }
-        else{
-            fos.write("0,".getBytes());
+            preset.setBathroom("1");
         }
 
         if(livingroomCB.isChecked()){
-            fos.write("1,".getBytes());
-        }
-        else{
-            fos.write("0,".getBytes());
+            preset.setLivingroom("1");
         }
 
         if(kitchenCB.isChecked()){
-            fos.write("1,".getBytes());
-        }
-        else{
-            fos.write("0,".getBytes());
+            preset.setKitchen("1");
         }
 
         if(bedroomCB.isChecked()){
-            fos.write("1,".getBytes());
-        }
-        else{
-            fos.write("0,".getBytes());
+            preset.setBedroom("1");
         }
 
         if(frontdoorCB.isChecked()){
-            fos.write("1,".getBytes());
-        }
-        else{
-            fos.write("0,".getBytes());
+            preset.setFrontDoor("1");
         }
         if(garageCB.isChecked()){
-            fos.write("1,".getBytes());
+            preset.setGarageDoor("1");
         }
-        else{
-            fos.write("0,".getBytes());
+        try {
+            writePresets(preset);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        fos.flush();
-        fos.close();
+        // fos.flush();
+       // fos.close();
     }
 
     public void setDefaultView(){
@@ -110,6 +102,55 @@ public class Presets extends Activity {
                 }
             }
         });
+    }
+
+    public String writePresets(Preset preset) throws Exception{
+        Log.v("Spinner", presetSpinner.getSelectedItem().toString());
+        FileOutputStream fos = openFileOutput(presetSpinner.getSelectedItem().toString(), Context.MODE_PRIVATE);
+        XmlSerializer xmlSerializer = Xml.newSerializer();
+        StringWriter writer = new StringWriter();
+        
+        xmlSerializer.setOutput(fos, "UTF-8");
+        xmlSerializer.startDocument("UTF-8", true);
+
+        //open tag preset
+        xmlSerializer.startTag("", Preset.PRESET);
+
+        //open tag bathroom
+        xmlSerializer.startTag("", Preset.BATHROOM);
+        xmlSerializer.text(preset.getBathroom());
+        xmlSerializer.endTag("", Preset.BATHROOM);
+
+        //open tag living room
+        xmlSerializer.startTag("", Preset.LIVINGROOM);
+        xmlSerializer.text(preset.getLivingroom());
+        xmlSerializer.endTag("", Preset.LIVINGROOM);
+
+        //open tag kitchen
+        xmlSerializer.startTag("", Preset.KITCHEN);
+        xmlSerializer.text(preset.getKitchen());
+        xmlSerializer.endTag("", Preset.KITCHEN);
+
+        //open tag bathroom
+        xmlSerializer.startTag("", Preset.BEDROOM);
+        xmlSerializer.text(preset.getBedroom());
+        xmlSerializer.endTag("", Preset.BEDROOM);
+
+        //open tag bathroom
+        xmlSerializer.startTag("", Preset.FRONTDOOR);
+        xmlSerializer.text(preset.getFrontDoor());
+        xmlSerializer.endTag("", Preset.FRONTDOOR);
+
+        //open tag bathroom
+        xmlSerializer.startTag("", Preset.GARAGEDOOR);
+        xmlSerializer.text(preset.getGarageDoor());
+        xmlSerializer.endTag("", Preset.GARAGEDOOR);
+
+        //close preset tag
+        xmlSerializer.endTag("", Preset.PRESET);
+
+        xmlSerializer.endDocument();
+        return writer.toString();
     }
 
 

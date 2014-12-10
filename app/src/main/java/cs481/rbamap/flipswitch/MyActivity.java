@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +23,14 @@ import android.widget.Toast;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -39,6 +45,7 @@ import house.models.Audio;
 import house.models.Camera;
 import house.models.Door;
 import house.models.Light;
+import house.models.Preset;
 import house.models.Room;
 
 import house.models.Sensor;
@@ -61,6 +68,7 @@ public class MyActivity extends Activity {
     //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
 
     public void triggerLight(Room room) {
+        Log.v("Parsed", room.getName());
         LightController controller = new LightController();
         Light light = new Light();
         light.setLocation(room);
@@ -95,6 +103,99 @@ public class MyActivity extends Activity {
         audio.setStatus(0);
         controller.execute(audio);
     }
+
+    public void pullPreset(String preset){
+        Preset createdPreset = null;
+        String text = "";
+        try {
+            FileInputStream fis = openFileInput(preset);// + ".xml");
+
+            XmlPullParser xpp = Xml.newPullParser();
+            xpp.setInput(fis, "utf-8");
+            //xpp.nextText();
+            //String text = xpp.getText();
+
+            int eventType = xpp.getEventType();
+            while(eventType != XmlPullParser.END_DOCUMENT){
+                String tagname = xpp.getName();
+                switch(eventType) {
+                    case XmlPullParser.START_TAG:
+                        if (tagname.equalsIgnoreCase("Preset")) {
+                            createdPreset = new Preset();
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        text = xpp.getText();
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if (tagname.equalsIgnoreCase("Preset")) {
+                            triggerPreset(createdPreset);
+                            Log.v("Parsed", createdPreset.getBathroom() + "Parsed");
+                            Log.v("Parsed", createdPreset.getLivingroom() + "Parsed");
+                            Log.v("Parsed", createdPreset.getKitchen() + "Parsed");
+                            Log.v("Parsed", createdPreset.getBedroom() + "Parsed");
+                        } else if (tagname.equalsIgnoreCase("Bathroom")) {
+                            createdPreset.setBathroom(text);
+                        } else if (tagname.equalsIgnoreCase("LivingRoom")) {
+                            createdPreset.setLivingroom(text);
+                        } else if (tagname.equalsIgnoreCase("Kitchen")) {
+                            createdPreset.setKitchen(text);
+                        } else if (tagname.equalsIgnoreCase("Bedroom")) {
+                            createdPreset.setBedroom(text);
+                        } else if (tagname.equalsIgnoreCase("FrontDoor")) {
+                            createdPreset.setFrontDoor(text);
+                        } else if (tagname.equalsIgnoreCase("GarageDoor")) {
+                            createdPreset.setGarageDoor(text);
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+                eventType = xpp.next();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void triggerPreset(Preset preset){
+        if(preset.getBathroom().equals("1")){
+            Room tempRoom = new Room();
+            tempRoom.setName("bathroom");
+            triggerLight(tempRoom);
+        }
+        if(preset.getLivingroom().equals("1")){
+            Room tempRoom = new Room();
+            tempRoom.setName("living room");
+            triggerLight(tempRoom);
+        }
+        if(preset.getKitchen().equals("1")){
+            Room tempRoom = new Room();
+            tempRoom.setName("kitchen");
+            triggerLight(tempRoom);
+        }
+        if(preset.getBedroom().equals("1")){
+            Room tempRoom = new Room();
+            tempRoom.setName("bedroom");
+            triggerLight(tempRoom);
+        }
+        if(preset.getFrontDoor().equals("1")){
+            // locked door
+        }
+        if(preset.getGarageDoor().equals("1")){
+            //locked door
+        }
+    }
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
         String [] listOfFiles = getAssets().list("Music");
@@ -114,8 +215,8 @@ public class MyActivity extends Activity {
 
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
-        ImageButton preset3 = (ImageButton) findViewById(R.id.preset3_Button);
-        preset3.setOnClickListener(new Button.OnClickListener() {
+        ImageButton presetSettings = (ImageButton) findViewById(R.id.presetSettings_Button);
+        presetSettings.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyActivity.this, Presets.class);
@@ -211,7 +312,43 @@ public class MyActivity extends Activity {
             }
         });
 
-        ImageButton audioStop = (ImageButton) findViewById(R.id.button_stop);
+        ImageButton preset1 = (ImageButton) findViewById(R.id.preset1_Button);
+        preset1.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    pullPreset("Preset1");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton preset2 = (ImageButton) findViewById(R.id.preset2_Button);
+        preset2.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    pullPreset("Preset1");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton preset3 = (ImageButton) findViewById(R.id.preset3_Button);
+        preset3.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    pullPreset("Preset1");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton audioStop = (ImageButton) findViewById(R.id.button_audio);
         audioStop.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
