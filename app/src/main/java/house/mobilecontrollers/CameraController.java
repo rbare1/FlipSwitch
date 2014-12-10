@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import android.util.Log;
@@ -15,6 +16,7 @@ import java.io.PrintWriter;
 //as a start
 
 import house.models.Camera;
+import house.models.JSON.JSON;
 import house.models.Light;
 import house.models.Room;
 
@@ -31,18 +33,18 @@ public class CameraController extends AsyncTask<Camera, Void, Void>{
     protected Void doInBackground(Camera... Void) {
         try {
             Log.v("", "Opening Socket");
-            //Socket socket = new Socket("192.168.163.37", 8080);
-            Socket socket = new Socket("192.168.171.1", 8080);
+            Socket socket = new Socket("192.168.171.26", 8079);
             Log.v("", "Opened Socket");
 
-            try {
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                out.write("cam");
-                out.flush();
-            } catch (IOException e) {
-                          // TODO Auto-generated catch block
-                        e.printStackTrace();
-            }
+            Object obj = new Camera();
+            PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
+
+            outputStream.println("Camera");
+            StringWriter sw = new StringWriter();
+            JSON.getObjectMapper().writeValue(sw, obj);
+            outputStream.println(sw.toString());
+            outputStream.flush();
+
             Log.v("", "Closing Socket");
             socket.close();
 

@@ -82,7 +82,7 @@ public class MyActivity extends Activity {
 
     public void triggerAudio(Audio audio) {
         AudioController controller = new AudioController();
-        Toast.makeText(MyActivity.this, audio.getName(), Toast.LENGTH_SHORT).show();
+        audio.setStatus(1);
         controller.execute(audio);
     }
 
@@ -97,10 +97,11 @@ public class MyActivity extends Activity {
         Log.v("Event", "Garage up triggered");
         controller.execute(garageDoor);
     }
-    public void triggerAudioChange(String str){
-        PlayerController controller = new PlayerController();
-        Log.v("Event", "Change in audio");
-        controller.execute(str);
+    public void triggerAudioChange(){
+        Audio audio = new Audio();
+        AudioController controller = new AudioController();
+        audio.setStatus(0);
+        controller.execute(audio);
     }
 
     public void pullPreset(String preset){
@@ -304,6 +305,7 @@ public class MyActivity extends Activity {
             }
         });
 
+        ImageButton audioStop = (ImageButton) findViewById(R.id.button_stop);
         ImageButton audioPause = (ImageButton) findViewById(R.id.preset1_Button);
         audioPause.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -321,7 +323,7 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 try {
-                    triggerAudioChange("audioS");
+                    triggerAudioChange();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

@@ -25,7 +25,7 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
-public class host {
+public class cameraHost {
     static final GpioController gpio = GpioFactory.getInstance();
 
     static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
@@ -82,6 +82,7 @@ public class host {
                         System.out.println(cam);
                         takePhoto(cam);
                     }
+                   
 
                     count++;
                     System.out.println("Connection!");
@@ -119,7 +120,6 @@ public class host {
 
     private static void takePhoto(String fileName){
         execShellCommand("raspistill -o "+ fileName +".jpg");
-        //execShellCommand("sudo mv -f "+ fileName +".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
-        execShellCommand("sudo mv -f "+ fileName +".jpg /var/lib/btsync");
+        execShellCommand("sudo mv -f "+ fileName +".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
     }
 }
