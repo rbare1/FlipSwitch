@@ -24,6 +24,10 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.fasterxml.jackson.*;
+
+//import sun.management.Sensor;
+
 public class roomEvent {
     static final GpioController gpio = GpioFactory.getInstance();
     static final GpioPinDigitalOutput fan = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "fan", PinState.HIGH); //physical GPIO 6
@@ -39,9 +43,11 @@ public class roomEvent {
     public static void main(String srgs[]) {
         String str = "";
         int count = 0;
+        String tempStr = "";
         heat.low();
         cool .low();
         fan.low();
+        
 
         //create and register gpio pin listener
         snapSwitch.addListener(new GpioPinListenerDigital(){
@@ -75,7 +81,8 @@ public class roomEvent {
                     String s;
                     int counter = 0;
                     FileReader reader = new FileReader("/sys/bus/w1/devices/28-000006085239/w1_slave");
-                    BufferedReader br = new BufferedReader(reader);
+                    BufferedReader br = new BufferedReader(reader);                                    
+                     
                     try {
                         while ((s = br.readLine()) != null) {
                             //System.out.println(s);
@@ -95,13 +102,31 @@ public class roomEvent {
                 try {
                     Socket socket = serverSocket.accept();
                     System.out.println("Socket Accepted");
-                    System.out.println(socket.getReceiveBufferSize());
-
+                    
                     try{
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                        str = in.readLine();
-                        System.out.println("String " + str + ".");
-                        desiredTemp = Integer.parseInt(str);
+                        String className = in.readLine();
+                        System.out.println(className.toString());
+                        Class<?> cls = String.class;
+                        try{
+                            cls = Class.forName(className);
+                        }catch(ClassNotFoundException e2){
+
+                        }
+                        String data = in.readLine();
+                        Object obj = JSON.getObjectMapper().readValue(new StringReader(data), cls);
+                        if(obj instanceof Sensor) {
+                            Sensor sensor = (Sensor) obj;
+                            desiredTemp = Float.parseFloat(sensor.getInfo());
+                            System.out.println(desiredTemp);
+                        } else if (obj instanceof Camera){
+							Date date = new Date();
+                            cam = dateFormat.format(date).toString();
+                            takePhoto(cam);
+                         //if(tempStr.equals("temprequest")){
+						// PrintWriter out = new PrintWriter(socket.getOutputStream, true);
+						// out.write(fs.toString());
+						}
 
 
                     }   catch(IOException e){
@@ -160,5 +185,10 @@ public class roomEvent {
             heat.low();
             fan.low();
         }
+    }
+
+    private static void takePhoto(String fileName){
+        execShellCommand("raspistill -o "+ fileName +".jpg");
+        execShellCommand("sudo mv -f "+ fileName +".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
     }
 }

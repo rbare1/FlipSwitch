@@ -32,11 +32,6 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 
 public class host {
 	
-	static final String GPIO_OUT = "out";
-    static final String GPIO_ON = "1";
-    static final String GPIO_OFF = "0";
-    static final String GPIO_LIVINGROOM = "17";
-    static final String GPIO_SWI="19";
     static final GpioController gpio = GpioFactory.getInstance();
 				
 	static final GpioPinDigitalOutput livingRoomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_23, "LivingRoomLED", PinState.HIGH);	//physical GPIO 13			
@@ -44,18 +39,14 @@ public class host {
 	static final GpioPinDigitalOutput bedroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21, "bedroomLED", PinState.HIGH); //physical GPIO 5
 	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH); //physical GPIO 12
     static final GpioPinDigitalOutput garageMotor = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "garageMotor", PinState.LOW); //physical GPIO 17
-
     static final GpioPinDigitalInput garageSensor = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
 
 	static Process audio_pr;
-
 	static int audio = 0;
+
     public static void main(String srgs[]) {
 
-		String str = "";
-		String output;
 		int count = 0;
-		//Light light;
 		livingRoomPin.low();
         kitchenPin.low();
         bedroomPin.low();
@@ -67,7 +58,7 @@ public class host {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
                 if(event.getState() == PinState.HIGH){
                     System.out.println("garage door stop");
-                    garageOpen(0);
+                    doorOpen(0);
                 }
             }
         });
@@ -97,35 +88,24 @@ public class host {
                    String data = in.readLine();
                    Object obj = JSON.getObjectMapper().readValue(new StringReader(data), cls);
 					if(obj instanceof Light){
-						System.out.println("Instance working");
 						Light light = (Light) obj;
-						str = light.getLocation().getName();
-					}
+                        TriggerLight(light.getLocation().getName());
+					}else if (obj instanceof Audio){
+                        Audio thisAudio = (Audio) obj;
+                        if(thisAudio.getStatus() == 0){
+                            StopAudio();
+                        }else{
+                            TriggerAudio(thisAudio.getName());
+                        }
+                    }else if (obj instanceof Door){
+                        Door door = (Door) obj;
+                        doorOpen(door.getStatus());
+                    }
 					//}
 			   }catch(IOException e2){
 				   
 			   }
-			   System.out.println(str);
-				  
-				   
-			  
-                if(str.contains(".mp3")) {
-                    TriggerAudio(str);
-                }
 
-                else if(str.equals("garageUp")){
-                    garageOpen(1);
-                }
-                else if(str.equals("audioP")){
-					PauseAudio();
-				}
-				else if(str.equals("audioS")){
-					StopAudio();
-				}
-                else {
-                    TriggerLight(str);
-                }
-                       
 				count++;
 				System.out.println("Connection!");
 
@@ -178,11 +158,6 @@ public class host {
 		audio = 1;	
     }
     
-    private static void PauseAudio(){
-		System.out.println("Pausing Audio");
-		execShellCommandAudio("P");
-	}
-	
 	private static void StopAudio(){
 		System.out.println("Stopping Audio");
 		execShellCommandAudio("Q");
@@ -209,7 +184,7 @@ public class host {
 		}
 	}
 
-    private static void garageOpen(int garageFlag){
+    private static void doorOpen(int garageFlag){
         System.out.println("Garage open method");
         if(garageFlag == 0){
             garageMotor.low();
