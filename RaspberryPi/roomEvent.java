@@ -31,8 +31,8 @@ import com.fasterxml.jackson.*;
 public class roomEvent {
     static final GpioController gpio = GpioFactory.getInstance();
     static final GpioPinDigitalOutput fan = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "fan", PinState.HIGH); //physical GPIO 6
-    static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "heatingLED", PinState.HIGH); //physical GPIO 25
-    static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "coolingLED", PinState.HIGH); //physical GPIO 16
+    static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "heatingLED", PinState.HIGH); //physical GPIO 25
+    static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "coolingLED", PinState.HIGH); //physical GPIO 16
     static final GpioPinDigitalOutput fan2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "fan2", PinState.HIGH); //physical GPIO 12
     static final GpioPinDigitalOutput heat2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "heatingLED2", PinState.HIGH); //physical GPIO 18
     static final GpioPinDigitalOutput cool2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "coolingLED2", PinState.HIGH); //physical GPIO 23
