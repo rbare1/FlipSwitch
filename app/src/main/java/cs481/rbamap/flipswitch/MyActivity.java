@@ -6,6 +6,7 @@ import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +23,14 @@ import android.widget.Toast;
 
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -35,10 +41,12 @@ import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.CameraController;
 import house.mobilecontrollers.GarageController;
 import house.mobilecontrollers.LightController;
+import house.mobilecontrollers.PlayerController;
 import house.models.Audio;
 import house.models.Camera;
 import house.models.Door;
 import house.models.Light;
+import house.models.Preset;
 import house.models.Room;
 
 import house.models.Sensor;
@@ -93,6 +101,92 @@ public class MyActivity extends Activity {
         PlayerController controller = new PlayerController();
         Log.v("Event", "Change in audio");
         controller.execute(str);
+    }
+
+    public void pullPreset(String preset){
+        Preset createdPreset = null;
+        String text = "";
+        try {
+            FileInputStream fis = openFileInput(preset);// + ".xml");
+
+            XmlPullParser xpp = Xml.newPullParser();
+            xpp.setInput(fis, "utf-8");
+            //xpp.nextText();
+            //String text = xpp.getText();
+            //Log.v("Parsed", text + "Parsed");
+            int eventType = xpp.getEventType();
+            while(eventType != XmlPullParser.END_DOCUMENT){
+                String tagname = xpp.getName();
+                switch(eventType) {
+                    case XmlPullParser.START_TAG:
+                        if (tagname.equalsIgnoreCase("Preset")) {
+                            createdPreset = new Preset();
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        text = xpp.getText();
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if (tagname.equalsIgnoreCase("Preset")) {
+                            triggerPreset(createdPreset);
+                        } else if (tagname.equalsIgnoreCase("Bathroom")) {
+                            createdPreset.setBathroom(text);
+                        } else if (tagname.equalsIgnoreCase("LivingRoom")) {
+                            createdPreset.setLivingroom(text);
+                        } else if (tagname.equalsIgnoreCase("Kitchen")) {
+                            createdPreset.setKitchen(text);
+                        } else if (tagname.equalsIgnoreCase("Bedroom")) {
+                            createdPreset.setBedroom(text);
+                        } else if (tagname.equalsIgnoreCase("FrontDoor")) {
+                            createdPreset.setFrontDoor(text);
+                        } else if (tagname.equalsIgnoreCase("GarageDoor")) {
+                            createdPreset.setGarageDoor(text);
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+                eventType = xpp.next();
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void triggerPreset(Preset preset){
+        Room tempRoom = new Room();
+        if(preset.getBathroom().equals("1")){
+            tempRoom.setName("bathroom");
+            triggerLight(tempRoom);
+        }
+        if(preset.getLivingroom().equals("1")){
+            tempRoom.setName("living room");
+            triggerLight(tempRoom);
+        }
+        if(preset.getKitchen().equals("1")){
+            tempRoom.setName("kitchen");
+            triggerLight(tempRoom);
+        }
+        if(preset.getBedroom().equals("1")){
+            tempRoom.setName("bedroom");
+            triggerLight(tempRoom);
+        }
+        if(preset.getFrontDoor().equals("1")){
+            // locked door
+        }
+        if(preset.getGarageDoor().equals("1")){
+            //locked door
+        }
     }
     public void getAudioList() throws URISyntaxException, ClientProtocolException,
             IOException, ParserConfigurationException, SAXException{
@@ -209,21 +303,13 @@ public class MyActivity extends Activity {
                 }
             }
         });
-        ImageButton temperatureButton = (ImageButton) findViewById(R.id.tempButton);
-        temperatureButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MyActivity.this, LivingRoom.class);
-                startActivity(intent);
-            }
-        });
 
         ImageButton audioPause = (ImageButton) findViewById(R.id.preset1_Button);
         audioPause.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    triggerAudioChange("audioP");
+                    pullPreset("Preset1");
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
