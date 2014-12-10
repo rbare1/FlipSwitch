@@ -39,6 +39,7 @@ public class LightController extends AsyncTask<Light, Void, Void>{
 
             Object obj = light[0];
             Log.v("", obj.getClass().getName());
+            Log.v("Parsed", light[0].getLocation().getName());
             PrintWriter outputStream = new PrintWriter(socket.getOutputStream());
 
             outputStream.println("Light");

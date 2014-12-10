@@ -41,7 +41,6 @@ import house.mobilecontrollers.AudioController;
 import house.mobilecontrollers.CameraController;
 import house.mobilecontrollers.GarageController;
 import house.mobilecontrollers.LightController;
-import house.mobilecontrollers.PlayerController;
 import house.models.Audio;
 import house.models.Camera;
 import house.models.Door;
@@ -69,6 +68,7 @@ public class MyActivity extends Activity {
     //Sensor trigger = new Sensor("trigger", 0, null, 0, null);
 
     public void triggerLight(Room room) {
+        Log.v("Parsed", room.getName());
         LightController controller = new LightController();
         Light light = new Light();
         light.setLocation(room);
@@ -114,7 +114,7 @@ public class MyActivity extends Activity {
             xpp.setInput(fis, "utf-8");
             //xpp.nextText();
             //String text = xpp.getText();
-            //Log.v("Parsed", text + "Parsed");
+
             int eventType = xpp.getEventType();
             while(eventType != XmlPullParser.END_DOCUMENT){
                 String tagname = xpp.getName();
@@ -132,6 +132,10 @@ public class MyActivity extends Activity {
                     case XmlPullParser.END_TAG:
                         if (tagname.equalsIgnoreCase("Preset")) {
                             triggerPreset(createdPreset);
+                            Log.v("Parsed", createdPreset.getBathroom() + "Parsed");
+                            Log.v("Parsed", createdPreset.getLivingroom() + "Parsed");
+                            Log.v("Parsed", createdPreset.getKitchen() + "Parsed");
+                            Log.v("Parsed", createdPreset.getBedroom() + "Parsed");
                         } else if (tagname.equalsIgnoreCase("Bathroom")) {
                             createdPreset.setBathroom(text);
                         } else if (tagname.equalsIgnoreCase("LivingRoom")) {
@@ -165,20 +169,23 @@ public class MyActivity extends Activity {
     }
 
     public void triggerPreset(Preset preset){
-        Room tempRoom = new Room();
         if(preset.getBathroom().equals("1")){
+            Room tempRoom = new Room();
             tempRoom.setName("bathroom");
             triggerLight(tempRoom);
         }
         if(preset.getLivingroom().equals("1")){
+            Room tempRoom = new Room();
             tempRoom.setName("living room");
             triggerLight(tempRoom);
         }
         if(preset.getKitchen().equals("1")){
+            Room tempRoom = new Room();
             tempRoom.setName("kitchen");
             triggerLight(tempRoom);
         }
         if(preset.getBedroom().equals("1")){
+            Room tempRoom = new Room();
             tempRoom.setName("bedroom");
             triggerLight(tempRoom);
         }
@@ -208,8 +215,8 @@ public class MyActivity extends Activity {
 
     public void setDefaultView(){
         setContentView(R.layout.activity_my);
-        ImageButton preset3 = (ImageButton) findViewById(R.id.preset3_Button);
-        preset3.setOnClickListener(new Button.OnClickListener() {
+        ImageButton presetSettings = (ImageButton) findViewById(R.id.presetSettings_Button);
+        presetSettings.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyActivity.this, Presets.class);
@@ -305,9 +312,8 @@ public class MyActivity extends Activity {
             }
         });
 
-        ImageButton audioStop = (ImageButton) findViewById(R.id.button_stop);
-        ImageButton audioPause = (ImageButton) findViewById(R.id.preset1_Button);
-        audioPause.setOnClickListener(new Button.OnClickListener() {
+        ImageButton preset1 = (ImageButton) findViewById(R.id.preset1_Button);
+        preset1.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -318,7 +324,31 @@ public class MyActivity extends Activity {
                 }
             }
         });
-        ImageButton audioStop = (ImageButton) findViewById(R.id.preset2_Button);
+        ImageButton preset2 = (ImageButton) findViewById(R.id.preset2_Button);
+        preset2.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    pullPreset("Preset1");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton preset3 = (ImageButton) findViewById(R.id.preset3_Button);
+        preset3.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    pullPreset("Preset1");
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        ImageButton audioStop = (ImageButton) findViewById(R.id.button_audio);
         audioStop.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
