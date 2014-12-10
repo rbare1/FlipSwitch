@@ -32,7 +32,10 @@ public class roomEvent {
     static final GpioController gpio = GpioFactory.getInstance();
     static final GpioPinDigitalOutput fan = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "fan", PinState.HIGH); //physical GPIO 6
     static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "heatingLED", PinState.HIGH); //physical GPIO 25
-    static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "collingLED", PinState.HIGH); //physical GPIO 16
+    static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "coolingLED", PinState.HIGH); //physical GPIO 16
+    static final GpioPinDigitalOutput fan2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "fan2", PinState.HIGH); //physical GPIO 12
+    static final GpioPinDigitalOutput heat2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "heatingLED2", PinState.HIGH); //physical GPIO 18
+    static final GpioPinDigitalOutput cool2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "coolingLED2", PinState.HIGH); //physical GPIO 23
     static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
     
     static String cam = "";
@@ -46,8 +49,11 @@ public class roomEvent {
         int count = 0;
         String tempStr = "";
         heat.low();
-        cool .low();
+        cool.low();
         fan.low();
+        heat2.low();
+        cool2.low();
+        fan2.low();
        
 
         //create and register gpio pin listener
@@ -73,11 +79,6 @@ public class roomEvent {
 
             while (true) {
 
-                try {
-                    Thread.sleep(4000);
-                } catch (InterruptedException iEx) {
-                    //
-                }
                 try {
                     String s;
                     int counter = 0;
@@ -173,14 +174,23 @@ public class roomEvent {
             cool.high();
             heat.low();
             fan.high();
+            cool2.high();
+            heat2.low();
+            fan2.high();
         }else if(fs < desiredTemp){
             heat.high();
             cool.low();
             fan.high();
+            heat2.high();
+            cool2.low();
+            fan2.high();
         }else{
             cool.low();
             heat.low();
             fan.low();
+            cool2.low();
+            heat2.low();
+            fan2.low();
         }
     }
 
