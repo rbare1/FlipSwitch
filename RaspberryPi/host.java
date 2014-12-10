@@ -40,9 +40,11 @@ public class host {
 	static final GpioPinDigitalOutput bathroomPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "bathroomLED", PinState.HIGH); //physical GPIO 12
     static final GpioPinDigitalOutput garageMotor = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "garageMotor", PinState.LOW); //physical GPIO 17
     static final GpioPinDigitalInput garageSensor = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
+    static final GpioPinDigitalOutput doorLock = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "doorLock", PinState.HIGH); //physical GPIO 24
 
 	static Process audio_pr;
 	static int audio = 0;
+    static int doorCounter = 0;
 
     public static void main(String srgs[]) {
 
@@ -51,18 +53,9 @@ public class host {
         kitchenPin.low();
         bedroomPin.low();
         bathroomPin.low();
+        doorLock.low();
 
-        //create and register gpio pin listener
-        garageSensor.addListener(new GpioPinListenerDigital(){
-            @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event){
-                if(event.getState() == PinState.HIGH){
-                    System.out.println("garage door stop");
-                    doorOpen(0);
-                }
-            }
-        });
-                
+
         //hard code to use port 8080
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
             
@@ -83,7 +76,7 @@ public class host {
                    try{
 					cls = Class.forName(className);
                    }catch(ClassNotFoundException e2){
-						
+
 					}
                    String data = in.readLine();
                    Object obj = JSON.getObjectMapper().readValue(new StringReader(data), cls);
@@ -97,9 +90,8 @@ public class host {
                         }else{
                             TriggerAudio(thisAudio.getName());
                         }
-                    }else if (obj instanceof Door){
-                        Door door = (Door) obj;
-                        doorOpen(door.getStatus());
+                    } else if (obj instanceof Door){
+                        triggerDoor();
                     }
 					//}
 			   }catch(IOException e2){
@@ -184,13 +176,67 @@ public class host {
 		}
 	}
 
-    private static void doorOpen(int garageFlag){
-        System.out.println("Garage open method");
-        if(garageFlag == 0){
-            garageMotor.low();
-        }
-        else{
-            garageMotor.high();
+    private static void triggerDoor(){
+        int period = 20;
+        int repeatLoop = 25;
+        doorCounter++;
+        int counter;
+
+        if(doorCounter == 1){
+            for (counter=0; counter<repeatLoop; counter++) {
+
+                // HIGH: Set GPIO port ON
+                doorLock.high();
+
+                // Pulse Width determined by amount of
+                //   sleep time while HIGH
+
+                try {
+                    java.lang.Thread.sleep(0, 1100000);
+                } catch (InterruptedException iEx) {
+                    //
+                }
+
+                // LOW: Set GPIO port OFF
+                doorLock.low();
+
+                // Frequency determined by amount of
+                //  sleep time while LOW
+                try {
+                    java.lang.Thread.sleep(period);
+                } catch (InterruptedException iEx) {
+                    //
+                }
+
+
+            }
+        }else{
+            for (counter=0; counter<repeatLoop; counter++) {
+
+                // HIGH: Set GPIO port ON
+                doorLock.high();
+
+                // Pulse Width determined by amount of
+                //   time while HIGH
+                try {
+                    java.lang.Thread.sleep(2, 200000);
+                } catch (InterruptedException iEx) {
+                    //
+                }
+
+
+                // LOW: Set GPIO port OFF
+                doorLock.low();
+
+                // Frequency determined by amount of
+                //  time while LOW
+                try {
+                    java.lang.Thread.sleep(period);
+                } catch (InterruptedException iEx) {
+                    //
+                }
+            }
+            doorCounter = 0;
         }
     }
 }

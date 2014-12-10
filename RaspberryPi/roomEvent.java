@@ -34,6 +34,7 @@ public class roomEvent {
     static final GpioPinDigitalOutput heat = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "heatingLED", PinState.HIGH); //physical GPIO 25
     static final GpioPinDigitalOutput cool = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "collingLED", PinState.HIGH); //physical GPIO 16
     static final GpioPinDigitalInput snapSwitch = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN); //physical GPIO 27
+    
     static String cam = "";
     static float desiredTemp = 75.00f;
     static float cs =0.00f;
@@ -47,7 +48,7 @@ public class roomEvent {
         heat.low();
         cool .low();
         fan.low();
-        
+       
 
         //create and register gpio pin listener
         snapSwitch.addListener(new GpioPinListenerDigital(){
@@ -123,11 +124,7 @@ public class roomEvent {
 							Date date = new Date();
                             cam = dateFormat.format(date).toString();
                             takePhoto(cam);
-                         //if(tempStr.equals("temprequest")){
-						// PrintWriter out = new PrintWriter(socket.getOutputStream, true);
-						// out.write(fs.toString());
-						}
-
+                        }
 
                     }   catch(IOException e){
                         e.printStackTrace();
@@ -188,7 +185,7 @@ public class roomEvent {
     }
 
     private static void takePhoto(String fileName){
-        execShellCommand("raspistill -o "+ fileName +".jpg");
+        execShellCommand("raspistill -vf -o "+ fileName +".jpg");
         execShellCommand("sudo mv -f "+ fileName +".jpg /home/pi/git/FlipSwitch/RaspberryPi/Photos");
     }
 }
